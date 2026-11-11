@@ -17,6 +17,7 @@ editable local JSON, not authenticated proof. Neither guarantees code correctnes
 or the safety of repeating an external operation.
 
 中文入门：[QUICKSTART.zh-CN.md](QUICKSTART.zh-CN.md)。
+Independent trial guide / 外部试用与反馈：[TRIAL.zh-CN.md](TRIAL.zh-CN.md).
 
 ## The first failure case
 
