@@ -1,4 +1,4 @@
-# Phoenix Continuity Gate — experimental v0.2 preview
+# Phoenix Continuity Gate — experimental v0.2.1 preview
 
 This is an early prototype for developer feedback, not a production safety
 system. It runs locally and does not require an account or upload project data.
@@ -32,7 +32,14 @@ on Windows with Python 3.14 and Git 2.54; other environments are not yet
 verified.
 
 If you received a ZIP file, extract the whole project folder first. On
-Windows, open that folder in File Explorer, type `cmd` in the address bar, and
+Windows, you can double-click `START_DEMO.cmd`: it checks installed Python and
+Git, runs the temporary demo, then pauses so errors do not disappear. It does not
+install dependencies or change global settings. `START_DEMO.cmd --check` checks
+prerequisites only; add `--no-pause` for automation. Discovery lists installed
+runtimes and probes concrete executables, skipping WindowsApps aliases. An
+empty successful command result is not accepted as a working interpreter.
+
+Alternatively, open that folder in File Explorer, type `cmd` in the address bar, and
 press Enter. This opens Command Prompt in the right directory. Do not
 double-click an individual `.py` file.
 

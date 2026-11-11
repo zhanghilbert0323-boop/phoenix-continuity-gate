@@ -56,7 +56,8 @@ def experiment() -> dict:
         repo = Path(directory)
         for folder in ("phoenix_continuity_gate", "tests"):
             shutil.copytree(ROOT / folder, repo / folder, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-        shutil.copy2(ROOT / "README.md", repo / "README.md")
+        for filename in ("README.md", "start_demo.py", "START_DEMO.cmd"):
+            shutil.copy2(ROOT / filename, repo / filename)
         source_hashes = {
             path.relative_to(repo).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(repo.rglob("*")) if path.is_file()
