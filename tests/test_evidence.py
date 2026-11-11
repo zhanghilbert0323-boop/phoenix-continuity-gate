@@ -149,7 +149,7 @@ class EvidenceTests(unittest.TestCase):
         project = Path(__file__).resolve().parents[1]
 
         def cli(*args):
-            return subprocess.run([sys.executable, "-m", "phoenix_continuity_gate", *args],
+            return subprocess.run([sys.executable, "-B", "-m", "phoenix_continuity_gate", *args],
                                   cwd=project, capture_output=True, text=True, timeout=30)
 
         first = cli("record", "--repo", str(self.repo), "--output", str(self.output),

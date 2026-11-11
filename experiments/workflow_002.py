@@ -56,7 +56,7 @@ def experiment() -> dict:
         repo = Path(directory)
         for folder in ("phoenix_continuity_gate", "tests"):
             shutil.copytree(ROOT / folder, repo / folder, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
-        for filename in ("README.md", "start_demo.py", "START_DEMO.cmd"):
+        for filename in ("README.md", ".gitignore", "start_demo.py", "START_DEMO.cmd"):
             shutil.copy2(ROOT / filename, repo / filename)
         source_hashes = {
             path.relative_to(repo).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
@@ -93,7 +93,8 @@ def experiment() -> dict:
 
         expected = ["PASS", "PASS", "BLOCK", "BLOCK"]
         if [case["gate"] for case in cases] != expected:
-            raise RuntimeError("Unexpected Gate verdicts; inspect the experiment before drawing conclusions")
+            actual = [(case["case"], case["gate"], case["findings"]) for case in cases]
+            raise RuntimeError(f"Unexpected Gate verdicts: {actual!r}")
         for case in cases[1:]:
             run = case["test_run"]
             if run["head_before"] != run["head_after"] or run["working_tree_after"]:
