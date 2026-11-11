@@ -1,4 +1,4 @@
-"""Local, read-only checks for interrupted coding-agent handoffs."""
+"""Local handoff checks and explicit command execution records."""
 
 from .gate import evaluate
 

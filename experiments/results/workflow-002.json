@@ -1,0 +1,113 @@
+{
+  "experiment": "workflow-002",
+  "kind": "controlled_fault_injection",
+  "created_at_utc": "2026-11-11T14:54:27.282742+00:00",
+  "python_version": "3.14.4",
+  "git_version": "git version 2.54.0.windows.1",
+  "source_sha256": {
+    "phoenix_continuity_gate/__init__.py": "fe7fd7fbdf8e3e1d76090b0f64bf0b0da81101b3467a515360beb3d2f323e681",
+    "phoenix_continuity_gate/__main__.py": "de2a2b9598f357a1a7824c371e6b1ab1ae57ad4fd9e4732b0a6dbe87aaca6409",
+    "phoenix_continuity_gate/demo.py": "04e373b3f1d200371c26d6fa53a1b90abf1e90223e2b68847e1d31f949737e90",
+    "phoenix_continuity_gate/gate.py": "ebc467a6ffa8ba16951593bc62a376cfaca6ca778bbbe3c83270b3ca48682e31",
+    "README.md": "b8f2c00c06dbf35e506e25290710878e0531b972d026ae8733e21510e9e72aea",
+    "tests/test_demo.py": "2225ffee190f41703bcee5b3278636266bf3c7f72f66d119c785ee07a92355d6",
+    "tests/test_gate.py": "420471114571346f9f781a19657219a984d91e3852b9a0ee58aaad9584c6a86b"
+  },
+  "scope": "Real subprocess test runs on an isolated copy; no customer validation or tamper-proof evidence.",
+  "cases": [
+    {
+      "case": "claim_before_any_test_run",
+      "gate": "PASS",
+      "findings": [
+        "Recorded hashes match a clean HEAD; the test claim itself was not independently verified."
+      ],
+      "test_run": null
+    },
+    {
+      "case": "baseline_after_actual_tests",
+      "gate": "PASS",
+      "findings": [
+        "Recorded hashes match a clean HEAD; the test claim itself was not independently verified."
+      ],
+      "test_run": {
+        "command": [
+          "python",
+          "-E",
+          "-s",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "head_before": "b330a578071d3b714ac7c1b73811e77332ce3d58",
+        "head_after": "b330a578071d3b714ac7c1b73811e77332ce3d58",
+        "working_tree_after": "",
+        "exit_code": 0,
+        "elapsed_seconds": 4.064,
+        "stdout": "",
+        "stderr": "test_one_demo_shows_fresh_then_stale_handoff (test_demo.DemoTests.test_one_demo_shows_fresh_then_stale_handoff) ... ok\ntest_failed_tests_block (test_gate.GateTests.test_failed_tests_block) ... ok\ntest_matching_clean_commit_passes_limited_consistency_check (test_gate.GateTests.test_matching_clean_commit_passes_limited_consistency_check) ... ok\ntest_new_commit_blocks_stale_handoff (test_gate.GateTests.test_new_commit_blocks_stale_handoff) ... ok\ntest_uncommitted_change_requires_review (test_gate.GateTests.test_uncommitted_change_requires_review) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 3.470s\n\nOK\n"
+      }
+    },
+    {
+      "case": "documentation_changed_old_handoff",
+      "gate": "BLOCK",
+      "findings": [
+        "Handoff commit b330a578071d3b714ac7c1b73811e77332ce3d58 differs from current HEAD 51ad1d366ad87795af68f9d7b15505e80b5492fe.",
+        "Passed-test claim applies to b330a578071d3b714ac7c1b73811e77332ce3d58, not current HEAD 51ad1d366ad87795af68f9d7b15505e80b5492fe."
+      ],
+      "test_run": {
+        "command": [
+          "python",
+          "-E",
+          "-s",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "head_before": "51ad1d366ad87795af68f9d7b15505e80b5492fe",
+        "head_after": "51ad1d366ad87795af68f9d7b15505e80b5492fe",
+        "working_tree_after": "",
+        "exit_code": 0,
+        "elapsed_seconds": 3.547,
+        "stdout": "",
+        "stderr": "test_one_demo_shows_fresh_then_stale_handoff (test_demo.DemoTests.test_one_demo_shows_fresh_then_stale_handoff) ... ok\ntest_failed_tests_block (test_gate.GateTests.test_failed_tests_block) ... ok\ntest_matching_clean_commit_passes_limited_consistency_check (test_gate.GateTests.test_matching_clean_commit_passes_limited_consistency_check) ... ok\ntest_new_commit_blocks_stale_handoff (test_gate.GateTests.test_new_commit_blocks_stale_handoff) ... ok\ntest_uncommitted_change_requires_review (test_gate.GateTests.test_uncommitted_change_requires_review) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 3.121s\n\nOK\n"
+      }
+    },
+    {
+      "case": "code_regression_old_handoff",
+      "gate": "BLOCK",
+      "findings": [
+        "Handoff commit b330a578071d3b714ac7c1b73811e77332ce3d58 differs from current HEAD 0424e3e845abf7d37727cb2573bbba97a7bb8c34.",
+        "Passed-test claim applies to b330a578071d3b714ac7c1b73811e77332ce3d58, not current HEAD 0424e3e845abf7d37727cb2573bbba97a7bb8c34."
+      ],
+      "test_run": {
+        "command": [
+          "python",
+          "-E",
+          "-s",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests",
+          "-v"
+        ],
+        "head_before": "0424e3e845abf7d37727cb2573bbba97a7bb8c34",
+        "head_after": "0424e3e845abf7d37727cb2573bbba97a7bb8c34",
+        "working_tree_after": "",
+        "exit_code": 1,
+        "elapsed_seconds": 3.205,
+        "stdout": "",
+        "stderr": "test_one_demo_shows_fresh_then_stale_handoff (test_demo.DemoTests.test_one_demo_shows_fresh_then_stale_handoff) ... FAIL\ntest_failed_tests_block (test_gate.GateTests.test_failed_tests_block) ... FAIL\ntest_matching_clean_commit_passes_limited_consistency_check (test_gate.GateTests.test_matching_clean_commit_passes_limited_consistency_check) ... FAIL\ntest_new_commit_blocks_stale_handoff (test_gate.GateTests.test_new_commit_blocks_stale_handoff) ... FAIL\ntest_uncommitted_change_requires_review (test_gate.GateTests.test_uncommitted_change_requires_review) ... FAIL\n\n======================================================================\nFAIL: test_one_demo_shows_fresh_then_stale_handoff (test_demo.DemoTests.test_one_demo_shows_fresh_then_stale_handoff)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<experiment-repo>\\tests\\test_demo.py\", line 13, in test_one_demo_shows_fresh_then_stale_handoff\n    self.assertEqual(result[\"after_verdict\"], \"BLOCK\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'PASS' != 'BLOCK'\n- PASS\n+ BLOCK\n\n\n======================================================================\nFAIL: test_failed_tests_block (test_gate.GateTests.test_failed_tests_block)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<experiment-repo>\\tests\\test_gate.py\", line 57, in test_failed_tests_block\n    self.assertEqual(verdict, \"BLOCK\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\nAssertionError: 'PASS' != 'BLOCK'\n- PASS\n+ BLOCK\n\n\n======================================================================\nFAIL: test_matching_clean_commit_passes_limited_consistency_check (test_gate.GateTests.test_matching_clean_commit_passes_limited_consistency_check)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<experiment-repo>\\tests\\test_gate.py\", line 39, in test_matching_clean_commit_passes_limited_consistency_check\n    self.assertIn(\"not independently verified\", findings[0])\n    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 'not independently verified' not found in 'Deliberately injected regression.'\n\n======================================================================\nFAIL: test_new_commit_blocks_stale_handoff (test_gate.GateTests.test_new_commit_blocks_stale_handoff)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<experiment-repo>\\tests\\test_gate.py\", line 46, in test_new_commit_blocks_stale_handoff\n    self.assertEqual(verdict, \"BLOCK\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^\nAssertionError: 'PASS' != 'BLOCK'\n- PASS\n+ BLOCK\n\n\n======================================================================\nFAIL: test_uncommitted_change_requires_review (test_gate.GateTests.test_uncommitted_change_requires_review)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"<experiment-repo>\\tests\\test_gate.py\", line 52, in test_uncommitted_change_requires_review\n    self.assertEqual(verdict, \"REVIEW\")\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^\nAssertionError: 'PASS' != 'REVIEW'\n- PASS\n+ REVIEW\n\n\n----------------------------------------------------------------------\nRan 5 tests in 2.692s\n\nFAILED (failures=5)\n"
+      }
+    }
+  ]
+}

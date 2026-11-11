@@ -10,6 +10,8 @@ from pathlib import Path
 
 from .demo import run_demo
 from .gate import evaluate
+from .evidence import assess_record, record_command
+from .evidence_demo import run_evidence_demo
 
 
 def main() -> int:
@@ -19,7 +21,54 @@ def main() -> int:
     check.add_argument("--repo", type=Path, required=True)
     check.add_argument("--handoff", type=Path, required=True)
     subparsers.add_parser("demo", help="Show a fresh handoff and a stale one in a disposable repository")
+    subparsers.add_parser("demo-record", help="Run real tests in a disposable project: pass, stale, fail, repair")
+    record = subparsers.add_parser("record", help="Explicitly execute a command and save a new local record")
+    record.add_argument("--repo", type=Path, required=True)
+    record.add_argument("--output", type=Path, required=True, help="New JSON file outside the repository")
+    record.add_argument("--timeout", type=float, default=60, help="Foreground command timeout in seconds (default: 60)")
+    record.add_argument("argv", nargs=argparse.REMAINDER, help="-- followed by an executable and its arguments")
+    inspect = subparsers.add_parser("inspect", help="Read an execution record and compare current files; runs no stored command")
+    inspect.add_argument("--repo", type=Path, required=True)
+    inspect.add_argument("--record", type=Path, required=True)
     args = parser.parse_args()
+
+    if args.command == "demo-record":
+        try:
+            steps = run_evidence_demo()
+        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+            print(f"Execution demo failed: {exc}", file=sys.stderr)
+            return 2
+        for index, step in enumerate(steps, 1):
+            result = step["assessment"]
+            print(f"Step {index}: {step['name']}")
+            print(f"  Execution: {result['execution']} | Freshness: {result['freshness']} | Gate: {result['verdict']}")
+        print("Real unittest commands ran in a temporary project. Sample files and records were removed.")
+        print("Scope: local observations, not authenticated proof or a guarantee of correctness.")
+        expected = [("SUCCEEDED", "MATCH", "PASS"), ("SUCCEEDED", "CHANGED", "BLOCK"),
+                    ("FAILED", "MATCH", "BLOCK"), ("SUCCEEDED", "MATCH", "PASS")]
+        actual = [(s["assessment"]["execution"], s["assessment"]["freshness"], s["assessment"]["verdict"]) for s in steps]
+        return 0 if actual == expected else 2
+
+    if args.command in ("record", "inspect"):
+        try:
+            if args.command == "record":
+                if not args.argv or args.argv[0] != "--":
+                    parser.error("Put -- before the command you explicitly want to execute")
+                evidence = record_command(args.repo, args.output, args.argv[1:], args.timeout)
+                print(f"Record: {args.output.resolve()}")
+            else:
+                evidence = json.loads(args.record.read_text(encoding="utf-8"))
+            result = assess_record(evidence, args.repo)
+        except (OSError, ValueError, subprocess.SubprocessError) as exc:
+            print(f"Cannot assess execution evidence: {exc}", file=sys.stderr)
+            return 2
+        print(f"Execution: {result['execution']}")
+        print(f"Freshness: {result['freshness']}")
+        print(f"Gate: {result['verdict']}")
+        for finding in result["findings"]:
+            print(f"- {finding}")
+        print(f"Scope: {result['scope']}")
+        return {"PASS": 0, "REVIEW": 1, "BLOCK": 2}[result["verdict"]]
 
     if args.command == "demo":
         try:
@@ -48,6 +97,7 @@ def main() -> int:
         return 2
 
     print(verdict)
+    print("Execution: UNKNOWN (handoff claim only; no execution record inspected)")
     for finding in findings:
         print(f"- {finding}")
     return {"PASS": 0, "REVIEW": 1, "BLOCK": 2}[verdict]
