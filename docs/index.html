@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>Phoenix — Continue with clarity.</title>
+  <meta name="description" content="Your code changed. Your old test result didn’t. Meet Phoenix Continuity Gate, an experimental local tool for coding-agent handoffs.">
+  <link rel="stylesheet" href="styles.css"><script src="app.js" defer></script>
+  <link rel="icon" href="mark.svg" type="image/svg+xml">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav"><a class="brand" href="#" aria-label="Phoenix home"><img src="mark.svg" width="26" height="26" alt="">phoenix<span class="brand-dot">.</span></a><nav aria-label="Main navigation"><a href="#story">Why Phoenix</a><a href="#demo">The experience</a><a class="nav-download" href="#start">Try the preview <span aria-hidden="true">↗</span></a></nav></header>
+<main id="main">
+<section class="hero">
+  <p class="eyebrow"><span class="live-dot"></span> PHOENIX CONTINUITY GATE <span class="version">v0.2.2 PREVIEW</span></p>
+  <h1>Continue.<br><span class="gradient-text">With clarity.</span></h1>
+  <p class="hero-copy">Your code changed. Your old test result didn’t.<br>Know what still holds before your agent picks up again.</p>
+  <div class="hero-actions"><a class="button dark" href="#demo">See it in action <span aria-hidden="true">↓</span></a><a class="text-link" href="https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate">Explore on GitHub <span aria-hidden="true">↗</span></a></div>
+  <div class="hero-art" aria-label="Illustration: a recorded pass at commit A becomes stale after code changes to commit B">
+    <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="halo"></div>
+    <div class="evidence-card old-card"><div class="card-top"><span class="tiny-dot"></span> PREVIOUS RUN <span>01</span></div><div class="card-heading">Tests passed.<span class="pill pass">PASS</span></div><div class="card-rule"></div><div class="mono">snapshot / commit A</div><p>A result worth keeping.<br>Not a promise about what comes next.</p></div>
+    <div class="evidence-card current-card"><div class="card-top"><span class="tiny-dot orange"></span> CURRENT STATE <span>02</span></div><div class="card-heading">Code moved on.<span class="pill block">BLOCK</span></div><div class="card-rule"></div><div class="mono">snapshot / commit B</div><p><span class="file-icon">↳</span> arithmetic.py <span class="change-tag">changed</span></p><div class="card-bottom">Old evidence. New context. <span>↗</span></div></div>
+    <span class="art-caption">ILLUSTRATIVE SNAPSHOTS · NOT A LIVE REPOSITORY</span>
+  </div>
+  <div class="hero-foot"><span>Local by design.</span><span>No account required.</span><span>No project upload.</span></div>
+</section>
+<section id="story" class="story section-wrap">
+  <p class="eyebrow">A SMALL CHECK. A CLEARER HANDOFF.</p>
+  <h2>A passed test is a moment.<br><span class="muted">Not a permanent state.</span></h2>
+  <div class="story-row"><p>An agent pauses. A teammate commits a change. A new session begins. The conversation says “tests passed.” But which version passed?</p><p>Phoenix connects a recorded command result to its Git and tracked-file snapshots. When that context changes, it tells you why the old result no longer matches.</p></div>
+  <div class="timeline"><div><span class="timeline-num">01 / RECORD</span><h3>Keep the result.</h3><p>Run a command you explicitly choose. Save its exit result and file fingerprints locally.</p></div><div><span class="timeline-num">02 / COMPARE</span><h3>Check the context.</h3><p>Inspect the record against the repository you’re returning to. No stored command is run.</p></div><div><span class="timeline-num">03 / UNDERSTAND</span><h3>See what changed.</h3><p>Read the changed paths and the reason for PASS, REVIEW or BLOCK.</p></div></div>
+</section>
+<section id="demo" class="demo-section">
+  <div class="section-wrap"><div class="demo-heading"><div><p class="eyebrow">LESS GUESSWORK. MORE CONTEXT.</p><h2>One workflow.<br>Four revealing moments.</h2></div><p>Follow the same sequence as our local demo.<br><span>This is an interactive example, not a live test runner.</span></p></div>
+  <div class="demo-shell">
+    <div class="demo-controls" aria-label="Choose a demonstration step"><button class="step active" data-step="0" aria-pressed="true"><span>01</span> A fresh start <i>↗</i></button><button class="step" data-step="1" aria-pressed="false"><span>02</span> Code changes <i>↗</i></button><button class="step" data-step="2" aria-pressed="false"><span>03</span> Tests fail <i>↗</i></button><button class="step" data-step="3" aria-pressed="false"><span>04</span> Back on track <i>↗</i></button></div>
+    <div class="demo-screen"><div class="terminal-top"><div class="window-dots"><b></b><b></b><b></b></div><span>phoenix / demo-record</span><span>LOCAL</span></div><div class="screen-body" aria-live="polite" aria-atomic="true"><p id="demo-kicker" class="mono">01 — RECORD A SUCCESSFUL RUN</p><div class="verdict-row"><h3 id="demo-title">A result you can place.</h3><span id="demo-verdict" class="pill pass">PASS</span></div><div class="metrics"><div><span>Execution</span><strong id="execution">SUCCEEDED</strong></div><div><span>Freshness</span><strong id="freshness">MATCH</strong></div></div><pre id="demo-output">$ record -- … your test command
+Command completed with exit code 0.
+Tracked-file snapshot still matches.</pre><p id="demo-explanation">The recorded command succeeded, and its snapshot still matches the current repository. This does not prove code correctness.</p></div><div class="screen-footer"><span class="live-dot"></span> Example replay <span>No code is uploaded or executed here.</span></div></div>
+  </div><div class="demo-note"><span>THE IMPORTANT DISTINCTION</span><p><strong>BLOCK doesn’t mean your code is broken.</strong> It can mean an old successful run no longer describes your current code.</p></div></div>
+</section>
+<section class="boundaries section-wrap" id="scope"><p class="eyebrow">CONFIDENCE STARTS WITH HONEST LIMITS.</p><h2>Know what it checks.<br><span class="muted">And what it doesn’t.</span></h2><div class="boundary-grid"><article><span class="boundary-sign">+</span><h3>Evidence, with context.</h3><ul><li>Explicit command execution and exit result</li><li>Git HEAD and tracked-file fingerprints</li><li>Changed paths and working-tree state</li><li>Local records you keep under your control</li></ul></article><article><span class="boundary-sign neutral">−</span><h3>Not a safety guarantee.</h3><ul><li>No proof of test quality or code correctness</li><li>No dependency analysis or test-skipping advice</li><li>No verification of ignored files or environment changes</li><li>Editable JSON records, not tamper-proof attestations</li></ul></article></div></section>
+<section id="start" class="start-section"><div class="section-wrap"><p class="eyebrow">SMALL TOOL. REAL QUESTIONS.</p><h2>Make the next<br><span class="gradient-text">handoff clearer.</span></h2><p class="start-copy">Try the experimental preview. Tell us where it helps.<br>And just as importantly, where it doesn’t.</p><a class="button dark" href="https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/download/v0.2.2-preview/phoenix-continuity-gate-v0.2.2-preview.zip">Download v0.2.2 <span aria-hidden="true">↓</span></a><p class="requirements">Python 3.11+ and Git required · Extract the entire ZIP</p><div class="command-box"><span class="mono" id="command">python -B -m phoenix_continuity_gate demo-record</span><button id="copy-command" aria-label="Copy demo command">Copy <span aria-hidden="true">⧉</span></button></div><p class="command-context">Run inside the extracted Phoenix folder. On Windows, you can also open <code>START_DEMO.cmd</code>.</p><span id="copy-status" role="status"></span><div class="resource-links"><a href="https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/blob/v0.2.2-preview/TRIAL.md">Read the trial guide ↗</a><a href="https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/blob/v0.2.2-preview/QUICKSTART.zh-CN.md">中文入门 ↗</a><a href="https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/issues/new?template=trial-feedback.md">Share honest feedback ↗</a></div></div></section>
+</main>
+<footer class="section-wrap"><div class="footer-top"><a class="brand" href="#"><img src="mark.svg" width="24" height="24" alt="">phoenix.</a><p>A small experiment in continuity.</p><a href="https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate">GitHub ↗</a></div><p class="fineprint">Experimental preview. Not a production safety system. A PASS is not permission to merge, deploy, pay, or repeat an external operation. The on-page examples are illustrative; no repository is inspected in your browser. Do not include private source, credentials or complete execution records in public feedback.</p><div class="footer-bottom"><span>Phoenix Continuity Gate</span><span>Independent project · No affiliation with Apple</span></div></footer>
+</body></html>
+
