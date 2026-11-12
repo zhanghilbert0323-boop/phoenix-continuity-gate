@@ -7,6 +7,11 @@ rule for skipping tests.
 
 Download: [v0.2.2 preview](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.2-preview).
 
+Post-release update on `main`: `inspect` and `check` accept UTF-8 JSON both
+with and without a BOM (an invisible prefix added by some Windows editors).
+Malformed JSON and non-UTF-8 files are still rejected. The v0.2.2 ZIP does not
+include this reading-compatibility fix; verdict rules are unchanged.
+
 Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
 The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code
 changes and pull requests; documentation-only changes are skipped. Windows CMD

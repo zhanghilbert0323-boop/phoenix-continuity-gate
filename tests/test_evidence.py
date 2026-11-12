@@ -161,6 +161,11 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(first.returncode, 0, first.stderr)
         self.assertIn("Execution: SUCCEEDED", first.stdout)
         original_bytes = self.output.read_bytes()
+        bom_record = self.base / "windows-editor-copy.json"
+        bom_record.write_bytes(b"\xef\xbb\xbf" + original_bytes)
+        bom_fresh = cli("inspect", "--repo", str(self.repo), "--record", str(bom_record))
+        self.assertEqual(bom_fresh.returncode, 0, bom_fresh.stderr)
+        self.assertIn("Freshness: MATCH", bom_fresh.stdout)
         (self.repo / "README.md").write_text("documentation change", encoding="utf-8")
         git(self.repo, "add", ".")
         git(self.repo, "commit", "-qm", "docs")
@@ -168,6 +173,10 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(stale.returncode, 2, stale.stderr)
         self.assertIn("Freshness: CHANGED", stale.stdout)
         self.assertIn('ADDED_TO_TRACKED_SET: "README.md"', stale.stdout)
+        bom_stale = cli("inspect", "--repo", str(self.repo), "--record", str(bom_record))
+        self.assertEqual(bom_stale.returncode, 2, bom_stale.stderr)
+        self.assertIn("Freshness: CHANGED", bom_stale.stdout)
+        self.assertEqual(bom_record.read_bytes(), b"\xef\xbb\xbf" + original_bytes)
         next_record = self.base / "next.json"
         fresh = cli("record", "--repo", str(self.repo), "--output", str(next_record),
                     "--", sys.executable, "-B", "-m", "unittest", "-v")

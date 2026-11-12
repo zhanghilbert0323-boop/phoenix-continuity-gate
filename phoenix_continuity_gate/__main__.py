@@ -60,7 +60,7 @@ def main() -> int:
                 evidence = record_command(args.repo, args.output, args.argv[1:], args.timeout)
                 print(f"Record: {args.output.resolve()}")
             else:
-                evidence = json.loads(args.record.read_text(encoding="utf-8"))
+                evidence = json.loads(args.record.read_text(encoding="utf-8-sig"))
             result = assess_record(evidence, args.repo)
         except (OSError, ValueError, subprocess.SubprocessError) as exc:
             print(f"Cannot assess execution evidence: {exc}", file=sys.stderr)
@@ -91,7 +91,7 @@ def main() -> int:
         return 0 if (result["before_verdict"], result["after_verdict"]) == ("PASS", "BLOCK") else 2
 
     try:
-        handoff = json.loads(args.handoff.read_text(encoding="utf-8"))
+        handoff = json.loads(args.handoff.read_text(encoding="utf-8-sig"))
         if not isinstance(handoff, dict):
             raise ValueError("Handoff JSON must be an object")
         verdict, findings = evaluate(handoff, args.repo)
