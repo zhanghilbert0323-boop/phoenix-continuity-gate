@@ -1,5 +1,14 @@
 # Phoenix 子项目实验记录
 
+## 自动兼容性检查：四组 GitHub 托管环境
+
+- 日期：2026-11-12。检查提交 `65e59afaa38b00325f8ef91c6ecd7aa75059d2a7`；[完整运行记录](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/runs/43232158309)。
+- Windows / Python 3.11.9：48 项通过；Windows / Python 3.14.10：48 项通过。
+- Ubuntu / Python 3.11.18 和 3.14.10：每组 40 项通过、8 项 Windows CMD 专用测试明确跳过。日志中的总发现数为 48，不把跳过项计算为通过。
+- 四组都通过环境预检和实际 `demo-record` 演示。托管 runner 的 Python 补丁版本与系统镜像可能随时间改变，完整版本以每次日志为准。
+- 工作流在主分支代码推送、pull request 或手动触发时运行，纯 Markdown 文档修改跳过。只读仓库权限，固定第三方 action 提交，不使用部署或付款凭据，不自动发布版本。
+- 这不是 macOS 验证、独立用户反馈、生产安全认证或付费需求证明；旧 v0.2.1 ZIP 未被这次主分支 CI 追溯验证。
+
 ## 主分支改进：解释具体变化（v0.2.1 发布之后）
 
 - 日期：2026-11-12。基于内部自用时 BLOCK 原因过于笼统的问题增加说明；不是已经确认的外部客户需求。

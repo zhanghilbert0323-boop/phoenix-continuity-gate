@@ -38,9 +38,13 @@ The Gate reports `BLOCK` and explains the mismatch.
 
 ## Start here: five-minute demo
 
-You need Python 3.11+ and Git available from a terminal. This version was tested
-on Windows with Python 3.14 and Git 2.54; other environments are not yet
-verified.
+You need Python 3.11+ and Git available from a terminal. The published v0.2.1
+ZIP was locally tested on Windows with Python 3.14 and Git 2.54. Subsequent
+`main` commit `65e59af` passed [four hosted CI jobs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/runs/43232158309):
+Windows and Ubuntu, each with Python 3.11 and 3.14. Each Windows job passed
+48 tests; each Ubuntu job passed 40 and skipped the 8 Windows-only CMD tests.
+All four jobs also ran the public demo. macOS and independent user environments
+remain unverified; this CI result does not retroactively test the older ZIP.
 
 If you received a ZIP file, extract the whole project folder first. On
 Windows, you can double-click `START_DEMO.cmd`: it checks installed Python and
