@@ -5,6 +5,12 @@ now explain changed tracked paths, HEAD and working-tree status. The published
 v0.2.1 ZIP remains unchanged. This is an explanation only, not dependency
 analysis or a rule for skipping tests.
 
+Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
+The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code
+changes and pull requests; documentation-only changes are skipped. Windows CMD
+integration tests are explicitly skipped on Linux. A green run describes those
+runner environments and that commit, not all user machines or customer validation.
+
 This is an early prototype for developer feedback, not a production safety
 system. It runs locally and does not require an account or upload project data.
 
