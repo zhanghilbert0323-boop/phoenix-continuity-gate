@@ -1,5 +1,8 @@
 # Phoenix Continuity Gate — experimental v0.2.2 preview
 
+Product website (no account required): [Phoenix](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/).
+The website includes an illustrative demo and a same-site copy of the v0.2.2 ZIP.
+
 Version 0.2.2 includes explanations of changed tracked paths, HEAD and
 working-tree status, plus English and Chinese trial guides. Older v0.2.1 ZIPs
 remain unchanged. This is an explanation only, not dependency analysis or a
