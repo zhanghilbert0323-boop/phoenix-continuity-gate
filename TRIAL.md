@@ -5,11 +5,12 @@ the demo is not evidence of customer demand. Negative results are useful.
 
 ## Choose the version first
 
-- [v0.2.1 preview ZIP](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/download/v0.2.1-preview/phoenix-continuity-gate-v0.2.1-preview.zip):
-  fixed downloadable version with the Windows launcher.
-- The `main` branch additionally explains changed tracked paths, HEAD and
-  working-tree status. Those explanations are **not in the v0.2.1 ZIP**.
-  If using a Git checkout, report `git rev-parse HEAD` so we can identify it.
+- [v0.2.2 preview ZIP](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/download/v0.2.2-preview/phoenix-continuity-gate-v0.2.2-preview.zip):
+  fixed downloadable version with the Windows launcher, changed-path explanations
+  and this guide.
+- Older v0.2.1 ZIPs do **not** include changed-path explanations. Keep reporting
+  the version you actually tried; there is no need to repeat completed feedback.
+- If using a `main` Git checkout, report `git rev-parse HEAD` so we can identify it.
 
 Requirements: Python 3.11+ and Git. No account, API key or cloud upload is needed.
 Do not install dependencies or disable security settings just to complete a trial

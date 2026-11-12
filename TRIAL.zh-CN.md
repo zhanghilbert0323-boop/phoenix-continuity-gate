@@ -28,6 +28,8 @@ v0.2.1 增加了 Windows 双击入口 `START_DEMO.cmd`。旧 v0.2 的命令行�
 
 ## 如何反馈
 
+v0.2.2 下载包加入文件变化解释及英文试用指南。旧 v0.2.1 包不含该解释；变化列表不是测试依赖分析，也不能据此跳过测试。
+
 可以通过 [GitHub 试用反馈入口](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/issues/new?template=trial-feedback.md) 提交，也可以私下发给项目维护者。公开 issue 中不要附完整执行 JSON、私人源码、密钥或客户资料；报错先遮盖个人路径和敏感参数。
 
 最重要的三个问题：能独立运行吗？结果看得懂吗？它比你现有的做法多帮了什么？“没有帮助”也是有价值的答案。

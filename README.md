@@ -1,9 +1,11 @@
-# Phoenix Continuity Gate — experimental v0.2.1 preview
+# Phoenix Continuity Gate — experimental v0.2.2 preview
 
-Development update on `main` (after the v0.2.1 release): stale execution records
-now explain changed tracked paths, HEAD and working-tree status. The published
-v0.2.1 ZIP remains unchanged. This is an explanation only, not dependency
-analysis or a rule for skipping tests.
+Version 0.2.2 includes explanations of changed tracked paths, HEAD and
+working-tree status, plus English and Chinese trial guides. Older v0.2.1 ZIPs
+remain unchanged. This is an explanation only, not dependency analysis or a
+rule for skipping tests.
+
+Download: [v0.2.2 preview](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.2-preview).
 
 Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
 The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code

@@ -10,7 +10,7 @@ assignees: ''
 
 ## Environment / 环境
 - Phoenix version or commit:
-- Downloaded release ZIP or main checkout (changed-path explanations are main-only after v0.2.1):
+- Downloaded release ZIP or main checkout (changed-path explanations require v0.2.2 or later main):
 - Operating system:
 - Python version (`python --version`):
 - Git version (`git --version`):
