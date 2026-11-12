@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const source = readFileSync(path.join(root, 'app.js'), 'utf8');
@@ -91,4 +92,10 @@ for (const page of ['guide.html', 'guide-zh.html']) {
  clipboard.writeText = async () => { throw Error('denied'); };
  await copyButtons[0].events.click(); assert.equal(notice.textContent, messages.copyFailure);
 }
-console.log('PASS: four pages, local resources and cross-page anchors; demo and language selection; command and feedback copying in both languages, including clipboard denial. Browser rendering remains unverified.');
+const downloadName = 'phoenix-continuity-gate-v0.2.2-preview.zip';
+const checksumEntry = readFileSync(path.join(root, 'downloads', 'SHA256SUMS.txt'), 'utf8').trim().match(/^([a-f0-9]{64})\s+(.+)$/);
+assert.ok(checksumEntry, 'Malformed published download checksum');
+assert.equal(checksumEntry[2], downloadName, 'Checksum points to an unexpected filename');
+const actualChecksum = createHash('sha256').update(readFileSync(path.join(root, 'downloads', downloadName))).digest('hex');
+assert.equal(actualChecksum, checksumEntry[1], 'Download archive differs from the published checksum');
+console.log('PASS: four pages, local resources and cross-page anchors; demo and language selection; command and feedback copying in both languages, including clipboard denial; release download checksum. Browser rendering remains unverified.');

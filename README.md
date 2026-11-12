@@ -12,6 +12,9 @@ is transmitted by the website.
 The public site's source is `docs/`; check its local resources, language routing
 and demo interactions with `node scripts/check-site.mjs`. These checks do not
 replace browser layout testing.
+GitHub's Tests workflow runs these website checks in its own Node.js 22 job,
+including the mirrored release ZIP's checksum. These are source and interaction
+logic checks; the separate GitHub Pages deployment is not gated by this job.
 
 Version 0.2.2 includes explanations of changed tracked paths, HEAD and
 working-tree status, plus English and Chinese trial guides. Older v0.2.1 ZIPs
