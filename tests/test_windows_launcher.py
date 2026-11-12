@@ -82,6 +82,7 @@ class WindowsLauncherTests(unittest.TestCase):
         self.assertIn("Step 4:", result.stdout)
         self.assertEqual(result.stdout.count("Gate: PASS"), 2, result.stdout)
         self.assertEqual(result.stdout.count("Gate: BLOCK"), 2, result.stdout)
+        self.assertIn('CONTENT_CHANGED: "arithmetic.py"', result.stdout)
 
     def test_missing_bootstrap_is_a_visible_failure(self):
         result = self.run_launcher("--check", "--no-pause")

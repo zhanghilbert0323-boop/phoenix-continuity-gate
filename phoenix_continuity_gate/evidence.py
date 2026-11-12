@@ -175,6 +175,44 @@ def _validate_snapshot(value: Any) -> None:
             raise ValueError("Invalid tracked-file fingerprint")
 
 
+def describe_changes(before: dict, after: dict, limit: int = 20) -> list[str]:
+    """Explain endpoint differences, not test dependencies or patch contents."""
+    details = []
+    if before["head"] != after["head"]:
+        details.append(f"HEAD changed: {before['head']} -> {after['head']}.")
+    old, new = before["files"], after["files"]
+    changes = []
+    for name in sorted(old.keys() | new.keys()):
+        if old.get(name) == new.get(name):
+            continue
+        if name not in old:
+            kind = "ADDED_TO_TRACKED_SET"
+        elif name not in new:
+            kind = "REMOVED_FROM_TRACKED_SET"
+        elif new[name]["kind"] == "missing":
+            kind = "MISSING_ON_DISK"
+        elif old[name]["kind"] != new[name]["kind"]:
+            kind = "TYPE_CHANGED"
+        else:
+            kind = "CONTENT_CHANGED"
+        # Escape control characters and non-ASCII paths for terminal safety.
+        changes.append(f"{kind}: {json.dumps(name, ensure_ascii=True)}")
+    details.append(f"Tracked-file differences: {len(changes)} (showing up to {limit}).")
+    details.extend(changes[:limit])
+    if len(changes) > limit:
+        details.append(f"... {len(changes) - limit} more tracked-file differences omitted.")
+    if before["working_tree_status"] != after["working_tree_status"]:
+        details.append("Working-tree status changed; Git status entries are not test-dependency information.")
+        for label, state in (("Recorded", before), ("Compared", after)):
+            lines = state["working_tree_status"].splitlines()
+            details.append(f"{label} working-tree entries: {len(lines)}.")
+            details.extend(f"{label}: {json.dumps(line, ensure_ascii=True)}" for line in lines[:limit])
+            if len(lines) > limit:
+                details.append(f"... {len(lines) - limit} more {label.lower()} entries omitted.")
+    details.append("These differences do not identify which tests are affected or safe to skip.")
+    return details
+
+
 def assess_record(record: Any, repo: Path) -> dict[str, Any]:
     """Inspect data and local files only; never execute the stored command."""
     if not isinstance(record, dict) or type(record.get("evidence_schema_version")) is not int or record["evidence_schema_version"] != 1 or record.get("kind") != "local-command-run":
@@ -206,12 +244,17 @@ def assess_record(record: Any, repo: Path) -> dict[str, Any]:
     elif before != after or before["working_tree_status"] or after["working_tree_status"]:
         freshness = "UNSTABLE_DURING_RUN"
         findings.append("Endpoint snapshots differ or contain uncommitted changes; the result is not bound to a stable snapshot.")
+        if before["root"] == after["root"]:
+            findings.append("Changes between the recorded BEFORE and AFTER execution snapshots:")
+            findings.extend(describe_changes(before, after))
     elif Path(before["root"]).resolve() != Path(current["root"]).resolve():
         freshness = "UNKNOWN"
         findings.append("This record belongs to a different repository location.")
     elif before != current:
         freshness = "CHANGED"
         findings.append("HEAD, tracked contents or working-tree state differ from the recorded snapshot.")
+        findings.append("Changes between the recorded snapshot and the CURRENT working tree:")
+        findings.extend(describe_changes(before, current))
     if status != "SUCCEEDED":
         findings.append(f"The recorded command did not succeed: {status}.")
     if execution.get("termination_error"):

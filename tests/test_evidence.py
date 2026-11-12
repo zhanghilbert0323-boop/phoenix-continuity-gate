@@ -63,6 +63,7 @@ class EvidenceTests(unittest.TestCase):
         result = assess_record(record, self.repo)
         self.assertEqual((result["execution"], result["freshness"], result["verdict"]),
                          ("SUCCEEDED", "CHANGED", "BLOCK"))
+        self.assertIn('CONTENT_CHANGED: "app.py"', result["findings"])
 
     def test_changed_bytes_even_when_git_assumes_unchanged(self):
         record = self.run_command()
@@ -76,12 +77,15 @@ class EvidenceTests(unittest.TestCase):
         result = assess_record(record, self.repo)
         self.assertEqual((result["execution"], result["freshness"], result["verdict"]),
                          ("SUCCEEDED", "UNSTABLE_DURING_RUN", "REVIEW"))
+        self.assertIn('CONTENT_CHANGED: "app.py"', result["findings"])
+        self.assertTrue(any("BEFORE and AFTER" in line for line in result["findings"]))
 
     def test_deleted_tracked_file_is_stale(self):
         record = self.run_command()
         (self.repo / "app.py").unlink()
         result = assess_record(record, self.repo)
         self.assertEqual((result["freshness"], result["verdict"]), ("CHANGED", "BLOCK"))
+        self.assertIn('MISSING_ON_DISK: "app.py"', result["findings"])
 
     def test_timeout_is_saved_without_success(self):
         record = self.run_command("import time; time.sleep(30)", timeout=0.1)
@@ -163,6 +167,7 @@ class EvidenceTests(unittest.TestCase):
         stale = cli("inspect", "--repo", str(self.repo), "--record", str(self.output))
         self.assertEqual(stale.returncode, 2, stale.stderr)
         self.assertIn("Freshness: CHANGED", stale.stdout)
+        self.assertIn('ADDED_TO_TRACKED_SET: "README.md"', stale.stdout)
         next_record = self.base / "next.json"
         fresh = cli("record", "--repo", str(self.repo), "--output", str(next_record),
                     "--", sys.executable, "-B", "-m", "unittest", "-v")

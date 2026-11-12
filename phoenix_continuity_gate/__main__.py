@@ -42,6 +42,9 @@ def main() -> int:
             result = step["assessment"]
             print(f"Step {index}: {step['name']}")
             print(f"  Execution: {result['execution']} | Freshness: {result['freshness']} | Gate: {result['verdict']}")
+            if result["freshness"] in ("CHANGED", "UNSTABLE_DURING_RUN"):
+                for finding in result["findings"]:
+                    print(f"  Why: {finding}")
         print("Real unittest commands ran in a temporary project. Sample files and records were removed.")
         print("Scope: local observations, not authenticated proof or a guarantee of correctness.")
         expected = [("SUCCEEDED", "MATCH", "PASS"), ("SUCCEEDED", "CHANGED", "BLOCK"),
