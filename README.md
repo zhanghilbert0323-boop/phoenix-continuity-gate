@@ -4,6 +4,11 @@ Product website (no account required): [Phoenix](https://zhanghilbert0323-boop.g
 The website includes an illustrative demo and a same-site copy of the v0.2.2 ZIP.
 Direct language links: [English](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/?lang=en)
 and [中文](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/zh.html?lang=zh).
+The first-run guide is also hosted on the same website:
+[English](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/guide.html) /
+[中文](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/guide-zh.html).
+It includes startup troubleshooting and a copyable feedback outline; no feedback
+is transmitted by the website.
 The public site's source is `docs/`; check its local resources, language routing
 and demo interactions with `node scripts/check-site.mjs`. These checks do not
 replace browser layout testing.

@@ -6,13 +6,21 @@ import assert from 'node:assert/strict';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const source = readFileSync(path.join(root, 'app.js'), 'utf8');
-for (const page of ['index.html', 'zh.html']) {
+for (const page of ['index.html', 'zh.html', 'guide.html', 'guide-zh.html']) {
  const html = readFileSync(path.join(root, page), 'utf8');
  const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
  assert.equal(new Set(ids).size, ids.length, `${page}: duplicate ids`);
  for (const [, href] of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
   if (href.startsWith('#')) { if (href.length > 1) assert.ok(ids.includes(href.slice(1)), `${page}: missing anchor ${href}`); }
-  else if (!href.startsWith('https://')) assert.ok(existsSync(path.join(root, href.split('?')[0])), `${page}: missing asset ${href}`);
+  else if (!href.startsWith('https://')) {
+   const [resource, fragment] = href.split('#');
+   const destination = path.join(root, resource.split('?')[0]);
+   assert.ok(existsSync(destination), `${page}: missing asset ${href}`);
+   if (fragment) {
+    const destinationIds = [...readFileSync(destination, 'utf8').matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+    assert.ok(destinationIds.includes(fragment), `${page}: missing destination anchor ${href}`);
+   }
+  }
  }
  assert.match(html, /hreflang="zh-CN"/);
  assert.match(html, /hreflang="en"/);
@@ -67,4 +75,20 @@ assert.equal(start({ lang: 'zh-CN', url: 'https://example.test/phoenix/zh.html',
 assert.equal(start({ blocked: true, browser: 'en-US', url: 'https://example.test/phoenix/?lang=en' }).location.redirect, undefined);
 assert.equal(start({ remembered: 'unexpected', url: 'https://example.test/phoenix/?lang=unexpected' }).location.redirect, undefined);
 assert.equal(new URL(start({ lang: 'zh-CN', url: 'https://example.test/phoenix/zh.html?lang=en#demo' }).location.redirect).pathname, '/phoenix/index.html');
-console.log('PASS: both pages, local resources and anchors; four states in both languages; clipboard success/failure; browser language, saved preference, explicit override, direct Chinese URL, blocked storage, invalid preference, language-switch anchor. Browser rendering remains unverified.');
+for (const page of ['guide.html', 'guide-zh.html']) {
+ const html = readFileSync(path.join(root, page), 'utf8');
+ const targets = {};
+ for (const [, id, text] of html.matchAll(/<(?:code|pre) id="([^"]+)">([\s\S]*?)<\/(?:code|pre)>/g)) targets[id] = { textContent: text };
+ const copyButtons = [...html.matchAll(/data-copy="([^"]+)"/g)].map(([, id]) => ({ ...element(), dataset: { copy: id } }));
+ const notice = { textContent: '' };
+ const messages = { copySuccess: html.match(/data-copy-success="([^"]+)"/)[1], copyFailure: html.match(/data-copy-failure="([^"]+)"/)[1] };
+ const clipboard = { async writeText(text) { this.copied = text; } };
+ vm.runInNewContext(readFileSync(path.join(root, 'guide.js'), 'utf8'), { navigator: { clipboard }, setTimeout: () => 1, clearTimeout() {}, document: { body: { dataset: messages }, querySelectorAll: () => copyButtons, getElementById: id => id === 'guide-copy-status' ? notice : targets[id] } });
+ for (const button of copyButtons) {
+  assert.ok(targets[button.dataset.copy], `${page}: missing copy target`);
+  await button.events.click(); assert.equal(clipboard.copied, targets[button.dataset.copy].textContent); assert.equal(notice.textContent, messages.copySuccess);
+ }
+ clipboard.writeText = async () => { throw Error('denied'); };
+ await copyButtons[0].events.click(); assert.equal(notice.textContent, messages.copyFailure);
+}
+console.log('PASS: four pages, local resources and cross-page anchors; demo and language selection; command and feedback copying in both languages, including clipboard denial. Browser rendering remains unverified.');
