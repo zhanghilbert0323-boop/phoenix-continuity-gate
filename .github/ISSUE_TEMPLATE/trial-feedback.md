@@ -10,6 +10,7 @@ assignees: ''
 
 ## Environment / 环境
 - Phoenix version or commit:
+- Downloaded release ZIP or main checkout (changed-path explanations are main-only after v0.2.1):
 - Operating system:
 - Python version (`python --version`):
 - Git version (`git --version`):
@@ -30,6 +31,7 @@ assignees: ''
 - Have you encountered a stale test result before? Describe one concrete case without private details:
 - How do you currently prevent or detect it?
 - Did Phoenix change what you did, or only repeat information you already had?
+- Did it ask for attention after a change you considered irrelevant (for example, documentation)?
 - Would you use it again? Why or why not?
 
 <!-- Running the demo, starring the repository, or offering encouragement does not establish a paid need. Honest negative feedback is useful. -->
