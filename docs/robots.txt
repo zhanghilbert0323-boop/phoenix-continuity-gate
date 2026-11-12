@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/sitemap.xml
