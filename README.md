@@ -28,6 +28,39 @@ with and without a BOM (an invisible prefix added by some Windows editors).
 Malformed JSON and non-UTF-8 files are still rejected. The v0.2.2 ZIP does not
 include this reading-compatibility fix; verdict rules are unchanged.
 
+Development update: `main` can now be installed as a local Python package with a
+`phoenix-gate` console command and `--version`. Its development version is
+`0.2.3.dev0`. This is not a PyPI publication or a change to the v0.2.2 download.
+
+## Install the development checkout (optional)
+
+Use a Python 3.11+ virtual environment. From a checkout of the current `main`
+branch, install the project with:
+
+```text
+python -m pip install .
+phoenix-gate --version
+phoenix-gate demo-record
+```
+
+The build may download setuptools through pip. Phoenix has no third-party
+runtime dependencies. The older v0.2.2 ZIP does not contain this packaging setup;
+its existing module command and Windows launcher still apply.
+
+After activating the same environment, `phoenix-gate` can run from another
+directory; no need to return to the Phoenix source folder. Its arguments and exit
+codes are the same as `python -m phoenix_continuity_gate`, for example:
+
+```text
+phoenix-gate inspect --repo "C:\path\to\your\repo" --record "C:\path\to\records\run-001.json"
+```
+
+This example reads a record; it does not rerun its command. To remove the installed
+development package, use `python -m pip uninstall phoenix-continuity-gate` in the
+same environment. Developers can verify the actual installation with
+`python -I scripts/check-installed.py`: it rejects imports from the source tree
+and checks the installed executable from an unrelated temporary directory.
+
 Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
 The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code
 changes and pull requests; documentation-only changes are skipped. Windows CMD

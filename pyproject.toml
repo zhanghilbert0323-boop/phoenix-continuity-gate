@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "phoenix-continuity-gate"
+dynamic = ["version"]
+description = "Local command records and snapshot checks for coding-agent handoffs"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+]
+
+[project.scripts]
+phoenix-gate = "phoenix_continuity_gate.__main__:main"
+
+[project.urls]
+Homepage = "https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/"
+Repository = "https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate"
+Issues = "https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/issues"
+
+[tool.setuptools]
+packages = ["phoenix_continuity_gate"]
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = {attr = "phoenix_continuity_gate.__version__"}

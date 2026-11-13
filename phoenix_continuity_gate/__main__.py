@@ -8,6 +8,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from . import __version__
 from .demo import run_demo
 from .gate import evaluate
 from .evidence import assess_record, record_command
@@ -16,6 +17,7 @@ from .evidence_demo import run_evidence_demo
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check whether a coding-agent handoff is stale.")
+    parser.add_argument("--version", action="version", version=f"Phoenix Continuity Gate {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
     check = subparsers.add_parser("check", help="Compare handoff claims with a local Git repository")
     check.add_argument("--repo", type=Path, required=True)
