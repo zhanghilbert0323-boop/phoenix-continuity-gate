@@ -155,4 +155,3 @@ class TeamTests(unittest.TestCase):
                                  "--check", "unit"], capture_output=True, text=True, timeout=30)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(json.loads(result.stdout)["checks"][0]["decision"]["action"], "READY_FOR_NEXT_STEP")
-
