@@ -25,7 +25,9 @@ For a bounded first team trial and a small feedback outline, start with
 [TEAM_TRIAL.md](TEAM_TRIAL.md). This is not a production-ready 1.0 release.
 
 Product website (no account required): [Phoenix](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/).
-The website includes an illustrative demo and a same-site copy of the v0.2.2 ZIP.
+The website includes an illustrative demo, local team-trial instructions and
+same-site mirrors of the fixed 1.0.0rc1 ZIP/wheel. The historical v0.2.2 ZIP remains
+available through an explicitly labeled legacy link; it is not the primary download.
 Direct language links: [English](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/?lang=en)
 and [中文](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/zh.html?lang=zh).
 The first-run guide is also hosted on the same website:
@@ -37,7 +39,7 @@ The public site's source is `docs/`; check its local resources, language routing
 and demo interactions with `node scripts/check-site.mjs`. These checks do not
 replace browser layout testing.
 GitHub's Tests workflow runs these website checks in its own Node.js 22 job,
-including the mirrored release ZIP's checksum. These are source and interaction
+including the fixed candidate ZIP/wheel and historical ZIP checksums. These are source and interaction
 logic checks; the separate GitHub Pages deployment is not gated by this job.
 
 Version 0.2.2 includes explanations of changed tracked paths, HEAD and

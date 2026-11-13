@@ -26,6 +26,18 @@ for (const page of ['index.html', 'zh.html', 'guide.html', 'guide-zh.html']) {
  assert.match(html, /hreflang="zh-CN"/);
  assert.match(html, /hreflang="en"/);
  assert.match(html, /aria-live="polite"/);
+ assert.match(html, /data-release="1\.0\.0rc1"/, `${page}: stale release identity`);
+ assert.match(html, /href="downloads\/phoenix-continuity-gate-1\.0\.0rc1\.zip"/, `${page}: missing candidate source download`);
+ assert.match(html, /href="downloads\/phoenix_continuity_gate-1\.0\.0rc1-py3-none-any\.whl"/, `${page}: missing candidate wheel`);
+ if (page.startsWith('guide')) {
+  assert.ok(ids.includes('team'), `${page}: missing team trial entry`);
+  assert.match(html, /phoenix-gate team validate/);
+  assert.match(html, /phoenix-gate team refresh/);
+  assert.match(html, /phoenix-gate team status/);
+  assert.match(html, /(?:Version:|版本：)\s*1\.0\.0rc1/);
+ } else {
+  assert.match(html, /href="guide(?:-zh)?\.html#team"/, `${page}: missing local team trial route`);
+ }
 }
 
 function element() {
@@ -92,10 +104,20 @@ for (const page of ['guide.html', 'guide-zh.html']) {
  clipboard.writeText = async () => { throw Error('denied'); };
  await copyButtons[0].events.click(); assert.equal(notice.textContent, messages.copyFailure);
 }
-const downloadName = 'phoenix-continuity-gate-v0.2.2-preview.zip';
-const checksumEntry = readFileSync(path.join(root, 'downloads', 'SHA256SUMS.txt'), 'utf8').trim().match(/^([a-f0-9]{64})\s+(.+)$/);
-assert.ok(checksumEntry, 'Malformed published download checksum');
-assert.equal(checksumEntry[2], downloadName, 'Checksum points to an unexpected filename');
-const actualChecksum = createHash('sha256').update(readFileSync(path.join(root, 'downloads', downloadName))).digest('hex');
-assert.equal(actualChecksum, checksumEntry[1], 'Download archive differs from the published checksum');
-console.log('PASS: four pages, local resources and cross-page anchors; demo and language selection; command and feedback copying in both languages, including clipboard denial; release download checksum. Browser rendering remains unverified.');
+const expectedDownloads = {
+ 'phoenix-continuity-gate-v0.2.2-preview.zip': 'f9dd62c3e17514b834d4338cc63f8ba1cba8a05db0f40528e21dbfc1201dc008',
+ 'phoenix-continuity-gate-1.0.0rc1.zip': 'ab0e85017396693f2b8a242c346c4d13c8030a05fd6f4f6dc99a56ae36ecd32f',
+ 'phoenix_continuity_gate-1.0.0rc1-py3-none-any.whl': '94754b6bf63675e6f7de2bb68ab7a335f0a49ad65bf04e442abfe97d2b65a80e'
+};
+const seen = new Set();
+for (const line of readFileSync(path.join(root, 'downloads', 'SHA256SUMS.txt'), 'utf8').trim().split(/\r?\n/)) {
+ const entry = line.match(/^([a-f0-9]{64})\s+([^/\\]+)$/);
+ assert.ok(entry, 'Malformed published download checksum');
+ const [, hash, name] = entry;
+ assert.ok(!seen.has(name), 'Duplicate checksum entry'); seen.add(name);
+ assert.equal(hash, expectedDownloads[name], `Unexpected release checksum for ${name}`);
+ const actual = createHash('sha256').update(readFileSync(path.join(root, 'downloads', name))).digest('hex');
+ assert.equal(actual, hash, `Mirrored release differs from fixed artifact: ${name}`);
+}
+assert.deepEqual([...seen].sort(), Object.keys(expectedDownloads).sort(), 'Missing checksum entry');
+console.log('PASS: four candidate-version pages, local resources and team/feedback routes; demo and language selection; demo/install/workflow/feedback copying in both languages, including clipboard denial; fixed candidate ZIP/wheel and historical ZIP checksums. Browser rendering remains unverified.');

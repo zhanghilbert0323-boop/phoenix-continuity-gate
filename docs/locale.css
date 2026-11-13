@@ -1,3 +1,5 @@
+.hero-actions{flex-wrap:wrap}
+.guide-step .button{max-width:100%;white-space:normal}
 .nav nav>a.language-switch{display:inline-flex;align-items:center;justify-content:center;min-height:38px;min-width:38px;border:1px solid #d9d5ce;border-radius:20px;font-size:11px;letter-spacing:.2px;padding:0 10px}
 html[lang="zh-CN"] body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
 html[lang="zh-CN"] h1{font-size:clamp(42px,6.4vw,88px);line-height:1.15;letter-spacing:-3px}
