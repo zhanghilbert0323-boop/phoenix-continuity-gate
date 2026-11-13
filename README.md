@@ -1,4 +1,10 @@
-# Phoenix Continuity Gate — experimental v0.2.2 preview
+# Phoenix Continuity Gate — development preview 0.2.3.dev0
+
+The installable development preview adds `phoenix-gate`, JSON inspection and a
+task-resume example. See [DEV_PREVIEW.md](DEV_PREVIEW.md) for wheel installation
+without a source build. Release artifacts are on the
+[v0.2.3-dev0 release page](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.3-dev0).
+The website's v0.2.2 download remains a separate, older preview.
 
 Product website (no account required): [Phoenix](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/).
 The website includes an illustrative demo and a same-site copy of the v0.2.2 ZIP.
