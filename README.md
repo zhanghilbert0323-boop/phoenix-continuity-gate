@@ -105,6 +105,12 @@ It reads this interface, checks schema and exit-code consistency, and prints a
 suggested evidence-handling action. It never starts a resumed task or runs a
 command from a record. The installed-package CI checks also exercise this example.
 
+For the refresh lifecycle, see the [bounded resume-cycle experiment](experiments/RESUME_CYCLE.md).
+Its recorded sample performs 14 inspections and four explicitly requested command
+runs, observing zero command starts during inspection. A negative control shows
+that a caller still selecting old A remains blocked even after B exists. This is
+an internal experiment, not an external agent benchmark or a measured cost saving.
+
 Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
 The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code
 changes and pull requests; documentation-only changes are skipped. Windows CMD

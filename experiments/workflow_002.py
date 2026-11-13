@@ -58,6 +58,8 @@ def experiment() -> dict:
             shutil.copytree(ROOT / folder, repo / folder, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
         for filename in ("README.md", ".gitignore", "start_demo.py", "START_DEMO.cmd"):
             shutil.copy2(ROOT / filename, repo / filename)
+        (repo / "experiments").mkdir()
+        shutil.copy2(ROOT / "experiments" / "resume_cycle.py", repo / "experiments" / "resume_cycle.py")
         source_hashes = {
             path.relative_to(repo).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted(repo.rglob("*")) if path.is_file()

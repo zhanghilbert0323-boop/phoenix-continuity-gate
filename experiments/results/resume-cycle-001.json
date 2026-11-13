@@ -1,0 +1,231 @@
+{
+  "experiment_schema_version": 1,
+  "experiment": "bounded-resume-cycle",
+  "started_at_utc": "2026-11-13T07:07:03.412731+00:00",
+  "finished_at_utc": "2026-11-13T07:07:17.178215+00:00",
+  "python_version": "3.14.4",
+  "platform": "Windows",
+  "phoenix_version": "0.2.3.dev0",
+  "source_sha256": {
+    "phoenix_continuity_gate/evidence.py": "b0d4714c891a6cddc019c9a204b52a6bd00aa2a31c785a2932f5c00828b4490a",
+    "phoenix_continuity_gate/resume.py": "2ad12a0151cba46ccc1f2f7931c92496621d1feea34b963a640b321a3fbd92eb",
+    "experiments/resume_cycle.py": "b252f8674f124ac01abee1d910e704b97a8a79a5d1d50c78d2aae631468f453d"
+  },
+  "summary": {
+    "inspection_calls": 14,
+    "explicit_command_runs": 4,
+    "observed_command_starts": 4,
+    "command_starts_during_inspections": 0,
+    "unchanged_resumes_using_B": 4
+  },
+  "checks": {
+    "all_actions_match": true,
+    "all_execution_results_match": true,
+    "inspection_never_increments_attempt_counter": true,
+    "each_explicit_refresh_starts_one_command": true,
+    "three_completed_unittest_runs_observed": true,
+    "old_record_files_preserved": true,
+    "working_tree_clean": true
+  },
+  "passed": true,
+  "explicit_refreshes": [
+    {
+      "record": "A",
+      "expected_execution": "SUCCEEDED",
+      "observed_execution": "SUCCEEDED",
+      "attempts_before": 0,
+      "attempts_after": 1,
+      "elapsed_seconds": 0.39,
+      "unittest_summary_observed": true
+    },
+    {
+      "record": "B",
+      "expected_execution": "SUCCEEDED",
+      "observed_execution": "SUCCEEDED",
+      "attempts_before": 1,
+      "attempts_after": 2,
+      "elapsed_seconds": 0.365,
+      "unittest_summary_observed": true
+    },
+    {
+      "record": "C",
+      "expected_execution": "FAILED",
+      "observed_execution": "FAILED",
+      "attempts_before": 2,
+      "attempts_after": 3,
+      "elapsed_seconds": 0.377,
+      "unittest_summary_observed": true
+    },
+    {
+      "record": "T",
+      "expected_execution": "TIMED_OUT",
+      "observed_execution": "TIMED_OUT",
+      "attempts_before": 3,
+      "attempts_after": 4,
+      "elapsed_seconds": 3.401,
+      "unittest_summary_observed": false
+    }
+  ],
+  "resume_events": [
+    {
+      "stage": "unchanged_after_A",
+      "selected_record": "A",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 1,
+      "attempts_after": 1
+    },
+    {
+      "stage": "unchanged_after_A",
+      "selected_record": "A",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 1,
+      "attempts_after": 1
+    },
+    {
+      "stage": "unchanged_after_A",
+      "selected_record": "A",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 1,
+      "attempts_after": 1
+    },
+    {
+      "stage": "A_became_stale",
+      "selected_record": "A",
+      "execution": "SUCCEEDED",
+      "freshness": "CHANGED",
+      "gate": "BLOCK",
+      "action": "NEEDS_FRESH_EVIDENCE",
+      "expected_action": "NEEDS_FRESH_EVIDENCE",
+      "attempts_before": 1,
+      "attempts_after": 1
+    },
+    {
+      "stage": "unchanged_after_explicit_switch_to_B",
+      "selected_record": "B",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 2,
+      "attempts_after": 2
+    },
+    {
+      "stage": "unchanged_after_explicit_switch_to_B",
+      "selected_record": "B",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 2,
+      "attempts_after": 2
+    },
+    {
+      "stage": "unchanged_after_explicit_switch_to_B",
+      "selected_record": "B",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 2,
+      "attempts_after": 2
+    },
+    {
+      "stage": "unchanged_after_explicit_switch_to_B",
+      "selected_record": "B",
+      "execution": "SUCCEEDED",
+      "freshness": "MATCH",
+      "gate": "PASS",
+      "action": "READY_FOR_NEXT_STEP",
+      "expected_action": "READY_FOR_NEXT_STEP",
+      "attempts_before": 2,
+      "attempts_after": 2
+    },
+    {
+      "stage": "negative_control_caller_still_selects_A",
+      "selected_record": "A",
+      "execution": "SUCCEEDED",
+      "freshness": "CHANGED",
+      "gate": "BLOCK",
+      "action": "NEEDS_FRESH_EVIDENCE",
+      "expected_action": "NEEDS_FRESH_EVIDENCE",
+      "attempts_before": 2,
+      "attempts_after": 2
+    },
+    {
+      "stage": "B_became_stale",
+      "selected_record": "B",
+      "execution": "SUCCEEDED",
+      "freshness": "CHANGED",
+      "gate": "BLOCK",
+      "action": "NEEDS_FRESH_EVIDENCE",
+      "expected_action": "NEEDS_FRESH_EVIDENCE",
+      "attempts_before": 2,
+      "attempts_after": 2
+    },
+    {
+      "stage": "recorded_failure_no_retry",
+      "selected_record": "C",
+      "execution": "FAILED",
+      "freshness": "MATCH",
+      "gate": "BLOCK",
+      "action": "REVIEW_RECORDED_FAILURE",
+      "expected_action": "REVIEW_RECORDED_FAILURE",
+      "attempts_before": 3,
+      "attempts_after": 3
+    },
+    {
+      "stage": "recorded_failure_no_retry",
+      "selected_record": "C",
+      "execution": "FAILED",
+      "freshness": "MATCH",
+      "gate": "BLOCK",
+      "action": "REVIEW_RECORDED_FAILURE",
+      "expected_action": "REVIEW_RECORDED_FAILURE",
+      "attempts_before": 3,
+      "attempts_after": 3
+    },
+    {
+      "stage": "recorded_timeout_no_retry",
+      "selected_record": "T",
+      "execution": "TIMED_OUT",
+      "freshness": "MATCH",
+      "gate": "BLOCK",
+      "action": "HUMAN_REVIEW",
+      "expected_action": "HUMAN_REVIEW",
+      "attempts_before": 4,
+      "attempts_after": 4
+    },
+    {
+      "stage": "recorded_timeout_no_retry",
+      "selected_record": "T",
+      "execution": "TIMED_OUT",
+      "freshness": "MATCH",
+      "gate": "BLOCK",
+      "action": "HUMAN_REVIEW",
+      "expected_action": "HUMAN_REVIEW",
+      "attempts_before": 4,
+      "attempts_after": 4
+    }
+  ],
+  "limits": [
+    "Controlled temporary sample, not a reproduction of a third-party bug or customer case.",
+    "The caller explicitly chooses A or B; there is no automatic latest-record selection.",
+    "No measured comparison with another agent or always-rerun policy; no customer savings claimed.",
+    "Ignored files, environment changes and test sufficiency remain outside the check scope."
+  ]
+}
