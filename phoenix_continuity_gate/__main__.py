@@ -28,9 +28,13 @@ def _print_inspection_json(result: dict | None = None, error: str | None = None)
 
 
 def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "team":
+        from .team import main as team_main
+        return team_main(sys.argv[2:])
     parser = argparse.ArgumentParser(description="Check whether a coding-agent handoff is stale.")
     parser.add_argument("--version", action="version", version=f"Phoenix Continuity Gate {__version__}")
     subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers.add_parser("team", help="Validate config, refresh one named check or inspect team evidence")
     check = subparsers.add_parser("check", help="Compare handoff claims with a local Git repository")
     check.add_argument("--repo", type=Path, required=True)
     check.add_argument("--handoff", type=Path, required=True)

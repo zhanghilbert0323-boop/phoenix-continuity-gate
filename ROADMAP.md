@@ -1,5 +1,9 @@
 # Phoenix Continuity Gate：产品推进路线
 
+当前更新（2026-11-13）：已进入命名检查、配置绑定和同 job 接入的 1.0 候选工作。
+最新放行条件见 [V1_READINESS.md](V1_READINESS.md)，用法见 [V1_CANDIDATE.md](V1_CANDIDATE.md)。
+以下保留早期计划与历史测试数，不代表当前状态，也不是已取得客户或收入的证据。
+
 状态：2026-11-10 的工作计划，不是已经发布的产品、客户承诺或收入预测。
 
 更新（2026-11-12）：v0.2 预览版代码及 ZIP 已发布到 GitHub，标签为 `v0.2-preview`，发布前 23 项本地测试通过。外部试用结果仍未收到；反馈流程见 [TRIAL.zh-CN.md](TRIAL.zh-CN.md)。公开竞品与 v0.1 的“未验证测试声明”边界已记入 [VALIDATION_002.md](VALIDATION_002.md)。本地 HTML 结果页仍暂缓。下表仍是候选路线，不是发布时间承诺。

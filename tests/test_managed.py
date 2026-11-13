@@ -165,3 +165,21 @@ class ManagedWorkflowTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr + result.stdout)
             self.assertEqual(json.loads(result.stdout)["decision"]["action"], "READY_FOR_NEXT_STEP")
             self.assertEqual(result.stderr, "")
+
+    def test_actual_process_exit_leaves_lock_and_pending_without_old_success_fallback(self):
+        self.refresh()
+        program = ("import os; from pathlib import Path; "
+                   "from phoenix_continuity_gate.managed import _lock, _write_pointer; "
+                   f"repo=Path({str(self.repo)!r}).resolve(); state=Path({str(self.state)!r});\n"
+                   "with _lock(state):\n"
+                   " _write_pointer(state, {'state_schema_version':1, 'repo':str(repo), 'status':'PENDING'})\n"
+                   " os._exit(17)\n")
+        process = subprocess.run([sys.executable, "-B", "-c", program], capture_output=True, text=True, timeout=30)
+        self.assertEqual(process.returncode, 17, process.stderr)
+        with self.assertRaises(FileExistsError):
+            self.action()
+        # This test owns the child and has observed its exit; this is not automatic recovery.
+        (self.state / ".lock").unlink()
+        with self.assertRaisesRegex(ValueError, "did not complete"):
+            self.action()
+        self.assertEqual(self.counter.read_text(), "x")

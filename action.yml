@@ -1,0 +1,33 @@
+name: Phoenix evidence gate
+description: Inspect one configured local check, or explicitly refresh it once. Python and Phoenix must already be installed.
+inputs:
+  config:
+    description: Path to the reviewed TOML config inside the target repository
+    required: true
+  check:
+    description: One configured check ID
+    required: true
+  mode:
+    description: status (default, no test execution) or refresh (explicit command execution)
+    default: status
+  state:
+    description: Private state directory outside the repository; defaults to RUNNER_TEMP/phoenix-team-state
+    default: ''
+outputs:
+  verdict:
+    description: PASS, REVIEW or BLOCK
+    value: ${{ steps.gate.outputs.verdict }}
+  decision:
+    description: Evidence-handling decision; not deployment permission
+    value: ${{ steps.gate.outputs.decision }}
+runs:
+  using: composite
+  steps:
+    - id: gate
+      shell: bash
+      env:
+        PHOENIX_CONFIG: ${{ inputs.config }}
+        PHOENIX_CHECK: ${{ inputs.check }}
+        PHOENIX_MODE: ${{ inputs.mode }}
+        PHOENIX_STATE: ${{ inputs.state }}
+      run: python -I -m phoenix_continuity_gate.ci

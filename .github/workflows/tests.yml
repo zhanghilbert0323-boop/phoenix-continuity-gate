@@ -67,3 +67,31 @@ jobs:
         run: python -m pip install --disable-pip-version-check --no-deps .
       - name: Check installed entry point outside the source tree
         run: python -I scripts/check-installed.py
+      - name: Create disposable team-integration project
+        id: fixture
+        run: python -I scripts/ci-fixture.py create
+      - name: Explicitly refresh fixture evidence through the composite action
+        uses: ./
+        with:
+          config: ${{ steps.fixture.outputs.config }}
+          check: unit
+          mode: refresh
+      - name: Inspect unchanged fixture through the composite action
+        uses: ./
+        with:
+          config: ${{ steps.fixture.outputs.config }}
+          check: unit
+      - name: Make a normal fixture edit
+        run: python -I scripts/ci-fixture.py change
+      - name: Confirm stale fixture is blocked
+        id: stale
+        continue-on-error: true
+        uses: ./
+        with:
+          config: ${{ steps.fixture.outputs.config }}
+          check: unit
+      - name: Assert negative control really failed
+        env:
+          STALE_OUTCOME: ${{ steps.stale.outcome }}
+          STALE_DECISION: ${{ steps.stale.outputs.decision }}
+        run: python -c "import os; assert os.environ['STALE_OUTCOME'] == 'failure'; assert os.environ['STALE_DECISION'] == 'NEEDS_FRESH_EVIDENCE'"

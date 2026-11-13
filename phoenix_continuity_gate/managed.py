@@ -57,7 +57,7 @@ def _write_pointer(state, pointer):
             Path(name).unlink(missing_ok=True)
 
 
-def _read_pointer(root, state):
+def _read_pointer(root, state, binding=None, allow_binding_change=False):
     path = state / "current.json"
     if path.is_symlink():
         raise ValueError("The current pointer must not be a symlink")
@@ -67,6 +67,14 @@ def _read_pointer(root, state):
             or pointer.get("repo") != str(root)
             or pointer.get("status") not in ("PENDING", "COMPLETE")):
         raise ValueError("Unsupported workflow state or repository mismatch")
+    stored_binding = pointer.get("binding")
+    if stored_binding is not None and (not isinstance(stored_binding, str)
+                                      or re.fullmatch(r"[0-9a-f]{64}", stored_binding) is None):
+        raise ValueError("Invalid configured-check binding")
+    if stored_binding is not None and binding is None:
+        raise ValueError("This state belongs to a configured check; use the team interface")
+    if not allow_binding_change and stored_binding != binding:
+        raise ValueError("Check definition changed; review the config and explicitly refresh this check")
     if pointer["status"] == "COMPLETE":
         if (not isinstance(pointer.get("record"), str)
                 or re.fullmatch(r"run-[0-9a-f]{32}\.json", pointer["record"]) is None
@@ -76,8 +84,8 @@ def _read_pointer(root, state):
     return pointer
 
 
-def _inspect_selected(root, state):
-    pointer = _read_pointer(root, state)
+def _inspect_selected(root, state, binding=None, expected_command=None):
+    pointer = _read_pointer(root, state, binding)
     if pointer["status"] != "COMPLETE":
         raise ValueError("The last refresh did not complete; review it before explicitly refreshing again")
     path = state / pointer["record"]
@@ -86,7 +94,10 @@ def _inspect_selected(root, state):
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != pointer["sha256"]:
         raise ValueError("The selected record changed after selection")
-    assessment = assess_record(json.loads(raw.decode("utf-8-sig")), root)
+    record = json.loads(raw.decode("utf-8-sig"))
+    if expected_command is not None and (not isinstance(record, dict) or record.get("command") != expected_command):
+        raise ValueError("Selected record command does not match the configured check")
+    assessment = assess_record(record, root)
     report = {"report_schema_version": 1, "assessment_status": "ASSESSED",
               **assessment, "error": None}
     code = {"PASS": 0, "REVIEW": 1, "BLOCK": 2}[assessment["verdict"]]
@@ -94,25 +105,29 @@ def _inspect_selected(root, state):
             "decision": plan_from_report(report, code)}, code
 
 
-def inspect_current(repo, state):
+def inspect_current(repo, state, *, binding=None, expected_command=None):
     """Read the selected record; never execute its stored command."""
     root, state = _paths(repo, state)
     with _lock(state):
-        return _inspect_selected(root, state)
+        return _inspect_selected(root, state, binding, expected_command)
 
 
-def refresh_current(repo, state, argv, timeout=60):
+def refresh_current(repo, state, argv, timeout=60, *, binding=None):
     """Run exactly one explicitly supplied command and select its result.
 
     Any failure before final selection leaves PENDING, never the previous PASS.
     Failed and timed-out executions are selected too; there is no success fallback.
     """
     root, state = _paths(repo, state)
+    if binding is not None and (not isinstance(binding, str) or re.fullmatch(r"[0-9a-f]{64}", binding) is None):
+        raise ValueError("Invalid configured-check binding")
     with _lock(state, create=True):
         current = state / "current.json"
         if current.exists() or current.is_symlink():
-            _read_pointer(root, state)  # Reject accidental reuse for another repo.
+            _read_pointer(root, state, binding, allow_binding_change=True)
         pointer = {"state_schema_version": 1, "repo": str(root), "status": "PENDING"}
+        if binding is not None:
+            pointer["binding"] = binding
         _write_pointer(state, pointer)
         filename = f"run-{uuid.uuid4().hex}.json"
         path = state / filename
@@ -120,7 +135,7 @@ def refresh_current(repo, state, argv, timeout=60):
         pointer.update(status="COMPLETE", record=filename,
                        sha256=hashlib.sha256(path.read_bytes()).hexdigest())
         _write_pointer(state, pointer)
-        return _inspect_selected(root, state)
+        return _inspect_selected(root, state, binding, argv)
 
 
 def main():

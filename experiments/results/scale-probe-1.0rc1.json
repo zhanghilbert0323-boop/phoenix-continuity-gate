@@ -1,0 +1,19 @@
+{
+  "experiment": "synthetic-scale-probe",
+  "created_at_utc": "2026-11-13T08:07:43.470040+00:00",
+  "tool_version": "1.0.0rc1",
+  "python": "3.14.4",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "files": 1000,
+  "bytes_per_file": 1024,
+  "total_tracked_bytes": 1024000,
+  "inspection_count": 5,
+  "record_seconds": 2.467972,
+  "inspection_seconds": [0.602955, 0.63088, 0.60291, 0.613905, 0.59517],
+  "inspection_median_seconds": 0.602955,
+  "stale_inspection_seconds": 0.647228,
+  "unchanged_verdicts": ["PASS", "PASS", "PASS", "PASS", "PASS"],
+  "changed_verdict": "BLOCK",
+  "passed": true,
+  "scope": "Small synthetic tracked files on one local machine; not a supported-size limit, customer benchmark, cold-cache test or savings claim."
+}

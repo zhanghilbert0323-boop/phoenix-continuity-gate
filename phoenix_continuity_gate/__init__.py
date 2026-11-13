@@ -2,6 +2,6 @@
 
 from .gate import evaluate
 
-__version__ = "0.2.3.dev1"
+__version__ = "1.0.0rc1"
 
 __all__ = ["evaluate", "__version__"]

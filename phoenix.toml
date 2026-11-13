@@ -1,0 +1,7 @@
+config_schema_version = 1
+project = "phoenix-continuity-gate"
+
+[checks.unit]
+command = ["{python}", "-B", "-m", "unittest", "discover", "-s", "tests", "-v"]
+timeout_seconds = 300
+scope = "tracked-repository"

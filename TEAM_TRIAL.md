@@ -1,5 +1,8 @@
 # First team trial / 第一轮团队试用
 
+This is the fixed dev1 guide. The current configured-check candidate starts at
+[V1_CANDIDATE.md](V1_CANDIDATE.md). Keep reporting the actual version you tried.
+
 Fixed version: **0.2.3.dev1**. This is an experimental local developer tool, not a
 production safety system or a hosted service. No account, API key, telemetry or
 source upload is required. Python 3.11+ and Git must already be available.

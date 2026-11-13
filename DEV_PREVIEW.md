@@ -1,5 +1,8 @@
 # Installable development preview / 可安装开发预览
 
+This guide describes the preserved dev1 release. For the current 1.0 candidate,
+use [V1_CANDIDATE.md](V1_CANDIDATE.md); older attachments are not modified.
+
 Version: `0.2.3.dev1`. This is an experimental developer release. It includes
 the `phoenix-gate` console entry point, `inspect --json`, UTF-8 BOM reading
 compatibility, a task-resume policy and the selected-record workflow example.

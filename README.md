@@ -1,4 +1,15 @@
-# Phoenix Continuity Gate — development preview 0.2.3.dev1
+# Phoenix Continuity Gate — 1.0.0rc1 candidate
+
+The current tree is a **1.0 release candidate, not final paid-team readiness**.
+Start with [V1_CANDIDATE.md](V1_CANDIDATE.md) for installation and a bounded trial.
+Named checks: [configuration](docs-dev/TEAM_CONFIGURATION.md),
+[GitHub Actions](docs-dev/GITHUB_ACTIONS.md), [interface/upgrade contract](docs-dev/API_CONTRACT.md).
+The owner selected [MIT licensing](LICENSE); proposed paid integration/customization
+and time-limited support are separate in [COMMERCIAL.md](COMMERCIAL.md).
+[Readiness gates](V1_READINESS.md) keep internal checks separate from external
+team acceptance and purchase evidence. No account or model API is required.
+
+## Earlier development preview (preserved)
 
 The installable development preview includes `phoenix-gate`, JSON inspection and
 selected-record workflow examples. See [DEV_PREVIEW.md](DEV_PREVIEW.md) for wheel installation
@@ -43,7 +54,7 @@ include this reading-compatibility fix; verdict rules are unchanged.
 
 Development update: `main` can now be installed as a local Python package with a
 `phoenix-gate` console command and `--version`. Its development version is
-`0.2.3.dev1`. This is not a PyPI publication or a change to the v0.2.2 download.
+`1.0.0rc1` on the current tree. This is not a PyPI publication or a change to older downloads.
 
 ## Install the development checkout (optional)
 

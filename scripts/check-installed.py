@@ -79,9 +79,54 @@ def main():
             if example.returncode != expected_code or example.stderr or plan.get("action") != expected_action:
                 raise RuntimeError(f"Resume example failed: {example.stdout}\n{example.stderr}")
             print(f"PASS installed resume example: {expected_action}")
+        # Named team checks must work through the installed console entry point.
+        config = repo / "phoenix.toml"
+        team_counter = Path(temp) / "team-starts.txt"
+        team_code = (f"from pathlib import Path; p=Path({str(team_counter)!r}); "
+                     "p.write_text(p.read_text()+'x' if p.exists() else 'x')")
+
+        def write_team_config(fail_unit=False):
+            unit = team_code + ("; raise SystemExit(1)" if fail_unit else "")
+            config.write_text('config_schema_version = 1\nproject = "installed-team"\n'
+                              '[checks.unit]\ncommand = ' + json.dumps(["{python}", "-B", "-c", unit]) +
+                              '\ntimeout_seconds = 30\nscope = "tracked-repository"\n'
+                              '[checks.lint]\ncommand = ' + json.dumps(["{python}", "-B", "-c", team_code + "; raise SystemExit(1)"]) +
+                              '\ntimeout_seconds = 30\nscope = "tracked-repository"\n', encoding="utf-8")
+            for args in [("add", "."), ("commit", "-qm", "team config")]:
+                subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
+
+        team_state = Path(temp) / "team-state"
+
+        def team(action, code, name=None, expected=None):
+            args = [str(executable), "team", action, "--config", str(config)]
+            if action != "validate":
+                args.extend(["--state", str(team_state)])
+            if name:
+                args.extend(["--check", name])
+            run = subprocess.run(args, cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+            value = json.loads(run.stdout)
+            if run.returncode != code or run.stderr or value.get("team_schema_version") != 1:
+                raise RuntimeError(f"Installed team command failed: {run.stdout}\n{run.stderr}")
+            if expected and value["checks"][0]["decision"]["action"] != expected:
+                raise RuntimeError(f"Installed team decision failed: {run.stdout}")
+            print(f"PASS installed team {action}: {value.get('verdict', 'VALID')}")
+            return value
+
+        write_team_config()
+        team("validate", 0)
+        team("refresh", 0, "unit", "READY_FOR_NEXT_STEP")
+        team("status", 0, "unit", "READY_FOR_NEXT_STEP")
+        team("refresh", 2, "lint", "REVIEW_RECORDED_FAILURE")
+        team("status", 0, "unit", "READY_FOR_NEXT_STEP")
+        team("status", 2)
+        write_team_config(fail_unit=True)
+        changed = team("status", 2, "unit", "INSPECTION_ERROR")
+        if "definition changed" not in changed["checks"][0]["error"]:
+            raise RuntimeError("Installed team status accepted a different check definition")
+        team("refresh", 2, "unit", "REVIEW_RECORDED_FAILURE")
+        if team_counter.read_text() != "xxx":
+            raise RuntimeError("Team status executed an extra command")
         # Exercise the selected-record example from the installed package, too.
-        for args in [("add", "."), ("commit", "-qm", "normal edit")]:
-            subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
         state = Path(temp) / "workflow-state"
         counter = Path(temp) / "managed-starts.txt"
         counted = (f"from pathlib import Path; p=Path({str(counter)!r}); "
