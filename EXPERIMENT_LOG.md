@@ -1,5 +1,15 @@
 # Phoenix 子项目实验记录
 
+## 1.0rc1 固定候选包验收与发布
+
+- 日期：2026-11-13。固定源提交 `a914df4c78e6206007f975fee879beb7c0b64658`，候选 tag `v1.0.0-rc1`，不是正式生产成熟度声明。
+- 从该提交生成并解压的实际 ZIP 中，91 项测试全部通过（Windows / Python 3.14.4，123.965 秒）。随后从解压源码构建 wheel，在全新虚拟环境离线、无依赖安装，跨目录验收通过，包括命名检查、聚合失败、配置变更和旧接入示例。
+- wheel 内核对版本 1.0.0rc1、License-Expression: MIT 及 dist-info/licenses/LICENSE。源码包包含根 action.yml、配置、测试、例子、候选/接口/回退/商业说明。
+- [四组云端运行](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/runs/43391438621)全部成功；Windows/Ubuntu × Python 3.11/3.14 各组实际运行 composite action，并通过旧证据失效的负向断言。Linux 的 Windows CMD 专项跳过不计为通过。
+- [公开候选 release](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v1.0.0-rc1)以 prerelease 发布，附 ZIP、wheel、SHA256SUMS.txt。三个公开地址重新下载均为 200，SHA-256 全部与本地一致；旧附件没有替换。
+- 固定 ZIP SHA-256：`ab0e85017396693f2b8a242c346c4d13c8030a05fd6f4f6dc99a56ae36ecd32f`；wheel：`94754b6bf63675e6f7de2bb68ab7a335f0a49ad65bf04e442abfe97d2b65a80e`。
+- 这些是内部工程验收。独立团队试用、真实购买理由、客户环境验收、付款及生产适用性仍未证明；付费范围需与实际买方另行约定。
+
 ## 1.0 候选开发：配置化检查与同 job 接入
 
 - 日期：2026-11-13。用户选择 MIT 开源核心，接入/定制/限期支持另行收费。新增 LICENSE、包元数据及 COMMERCIAL.md；没有订阅锁、激活接口、已签合同或收入承诺。

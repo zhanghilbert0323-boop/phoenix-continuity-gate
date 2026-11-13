@@ -3,6 +3,12 @@
 This is a current engineering and evidence checklist, not a completion percentage,
 release-date promise, customer claim or replacement for actual CI results.
 
+Verified candidate: [v1.0.0-rc1](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v1.0.0-rc1),
+fixed source `a914df4c78e6206007f975fee879beb7c0b64658`. Its exact ZIP passed 91
+tests on Windows/Python 3.14.4; the wheel built from that ZIP passed fresh-environment,
+cross-directory installation checks. All three public downloads matched local
+SHA-256 hashes. See the [four-matrix hosted run](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/runs/43391438621).
+
 ## Candidate scope
 
 A local Python/Git evidence gate with named reviewed checks, stable CLI/JSON,
@@ -11,11 +17,11 @@ business boundary. Not a hosted team dashboard or authenticated evidence service
 
 | Gate | Candidate work / remaining evidence |
 | --- | --- |
-| Named check configuration and isolation | Implemented; verify command/config changes, separate checks, unknown input and no implicit refresh in tests |
-| Actual workflow adapter | Composite action and same-job fixture lifecycle added; hosted refresh/PASS/stale-BLOCK execution must pass, not merely YAML review |
-| Recovery | Real child-exit/PENDING test added; residue requires reviewed manual recovery; detached processes and hardware-failure durability are not guaranteed |
-| Interface/upgrade boundary | CLI contract, separate-environment rollback and current schema support documented; validate installed package |
-| Distribution and license | MIT chosen by owner; fixed candidate ZIP/wheel must contain correct version/license and pass installation checks |
+| Named check configuration and isolation | Candidate verified: command/config changes, separate checks, unknown input and no implicit refresh; 91 tests in the final source ZIP |
+| Actual workflow adapter | Candidate verified in all four hosted matrix jobs: actual composite refresh/PASS/stale-BLOCK and negative-control assertion passed |
+| Recovery | Real child-exit/PENDING regression passed; residue requires reviewed manual recovery; detached processes and hardware-failure durability are not guaranteed |
+| Interface/upgrade boundary | CLI contract and separate-environment rollback documented; installed candidate/legacy examples verified. No automatic in-place migration is promised |
+| Distribution and license | Owner-selected MIT verified in wheel metadata and bundled LICENSE; fixed ZIP/wheel installed and public download hashes verified |
 | Scale observation | Internal synthetic probe: 1000 tracked 1 KiB files, five unchanged inspections; median 0.603 s on one Windows/Python 3.14.4 environment. See the saved report below; no customer-scale or supported-size claim |
 | Independent use | No independent team result recorded in this checklist; require an external authorized workflow observation before calling it externally validated |
 | Paid team value | No verified buyer/payment; a scoped paid pilot and repeated product demand remain commercial gates, not coding tasks |
