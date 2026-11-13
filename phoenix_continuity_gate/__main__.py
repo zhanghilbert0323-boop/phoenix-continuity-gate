@@ -15,6 +15,18 @@ from .evidence import assess_record, record_command
 from .evidence_demo import run_evidence_demo
 
 
+def _print_inspection_json(result: dict | None = None, error: str | None = None) -> None:
+    """Emit one assessment object, excluding the stored command and its logs."""
+    if error is not None:
+        result = {"verdict": "BLOCK", "execution": "UNKNOWN", "freshness": "UNKNOWN",
+                  "findings": [], "scope": "Assessment could not be completed; no stored command was executed."}
+    report = {"report_schema_version": 1,
+              "assessment_status": "ERROR" if error is not None else "ASSESSED",
+              **result,
+              "error": {"code": "CANNOT_ASSESS", "message": error} if error is not None else None}
+    print(json.dumps(report, ensure_ascii=True))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Check whether a coding-agent handoff is stale.")
     parser.add_argument("--version", action="version", version=f"Phoenix Continuity Gate {__version__}")
@@ -32,6 +44,7 @@ def main() -> int:
     inspect = subparsers.add_parser("inspect", help="Read an execution record and compare current files; runs no stored command")
     inspect.add_argument("--repo", type=Path, required=True)
     inspect.add_argument("--record", type=Path, required=True)
+    inspect.add_argument("--json", action="store_true", help="Emit one JSON assessment object for scripts")
     args = parser.parse_args()
 
     if args.command == "demo-record":
@@ -65,8 +78,14 @@ def main() -> int:
                 evidence = json.loads(args.record.read_text(encoding="utf-8-sig"))
             result = assess_record(evidence, args.repo)
         except (OSError, ValueError, subprocess.SubprocessError) as exc:
+            if args.command == "inspect" and args.json:
+                _print_inspection_json(error=str(exc))
+                return 2
             print(f"Cannot assess execution evidence: {exc}", file=sys.stderr)
             return 2
+        if args.command == "inspect" and args.json:
+            _print_inspection_json(result)
+            return {"PASS": 0, "REVIEW": 1, "BLOCK": 2}[result["verdict"]]
         print(f"Execution: {result['execution']}")
         print(f"Freshness: {result['freshness']}")
         print(f"Gate: {result['verdict']}")

@@ -61,6 +61,39 @@ same environment. Developers can verify the actual installation with
 `python -I scripts/check-installed.py`: it rejects imports from the source tree
 and checks the installed executable from an unrelated temporary directory.
 
+### JSON assessment for scripts and agents (development checkout)
+
+`inspect --json` emits one JSON object on stdout. It performs the same read-only
+assessment and uses the same exit codes: PASS `0`, REVIEW `1`, BLOCK or invalid
+input `2`. The output does not include stored command arguments or execution logs.
+
+```text
+phoenix-gate inspect --repo "C:\path\to\your\repo" --record "C:\path\to\records\run-001.json" --json
+```
+
+Example for a successfully assessed, stale record (scope text abbreviated here):
+
+```json
+{
+  "report_schema_version": 1,
+  "assessment_status": "ASSESSED",
+  "verdict": "BLOCK",
+  "execution": "SUCCEEDED",
+  "freshness": "CHANGED",
+  "findings": ["HEAD, tracked contents or working-tree state differ from the recorded snapshot."],
+  "scope": "Editable local record; limitations apply.",
+  "error": null
+}
+```
+
+If the record cannot be read, parsed or assessed, `assessment_status` is `ERROR`,
+`verdict` is `BLOCK`, execution and freshness are `UNKNOWN`, and `error` contains
+`code: "CANNOT_ASSESS"` and a message. Missing CLI arguments or invalid CLI syntax
+still use argparse's normal stderr output; consumers must handle non-JSON output
+as an invocation failure. Check the report schema and assessment status as well
+as the exit code. A PASS does not authorize merging or deployment. This interface
+is present on current `main`, not in the older v0.2.2 ZIP.
+
 Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
 The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code
 changes and pull requests; documentation-only changes are skipped. Windows CMD

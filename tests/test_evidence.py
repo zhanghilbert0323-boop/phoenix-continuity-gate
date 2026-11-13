@@ -149,6 +149,58 @@ class EvidenceTests(unittest.TestCase):
                 self.run_command(timeout=timeout)
         self.assertFalse(self.output.exists())
 
+    def test_cli_json_inspect_preserves_verdicts_and_never_runs_stored_command(self):
+        project = Path(__file__).resolve().parents[1]
+        record = self.run_command("print('PRIVATE_LOG_MARKER')")
+        sentinel = self.base / "must-not-exist"
+        record["command"] = [sys.executable, "-c", f"from pathlib import Path; Path({str(sentinel)!r}).touch()"]
+
+        def inspect(payload, expected_code):
+            self.output.write_text(json.dumps(payload), encoding="utf-8")
+            result = subprocess.run([sys.executable, "-B", "-m", "phoenix_continuity_gate", "inspect",
+                                     "--repo", str(self.repo), "--record", str(self.output), "--json"],
+                                    cwd=project, capture_output=True, text=True, timeout=30)
+            self.assertEqual(result.returncode, expected_code, result.stderr)
+            self.assertEqual(result.stderr, "")
+            self.assertNotIn("PRIVATE_LOG_MARKER", result.stdout)
+            report = json.loads(result.stdout)
+            self.assertEqual(report["report_schema_version"], 1)
+            self.assertEqual(report["assessment_status"], "ASSESSED")
+            self.assertIsNone(report["error"])
+            self.assertFalse(sentinel.exists())
+            return report
+
+        fresh = inspect(record, 0)
+        self.assertEqual((fresh["verdict"], fresh["execution"], fresh["freshness"]), ("PASS", "SUCCEEDED", "MATCH"))
+        unknown = copy.deepcopy(record)
+        unknown["snapshot_after"] = None
+        review = inspect(unknown, 1)
+        self.assertEqual((review["verdict"], review["freshness"]), ("REVIEW", "UNKNOWN"))
+        (self.repo / "app.py").write_text("changed\n", encoding="utf-8")
+        stale = inspect(record, 2)
+        self.assertEqual((stale["verdict"], stale["freshness"]), ("BLOCK", "CHANGED"))
+        self.assertIn('CONTENT_CHANGED: "app.py"', stale["findings"])
+
+    def test_cli_json_inspect_reports_invalid_input_without_traceback(self):
+        project = Path(__file__).resolve().parents[1]
+        for data in (None, "{malformed", "[]"):
+            with self.subTest(data=data):
+                record_path = self.base / "bad.json"
+                if data is not None:
+                    record_path.write_text(data, encoding="utf-8")
+                result = subprocess.run([sys.executable, "-B", "-m", "phoenix_continuity_gate", "inspect",
+                                         "--repo", str(self.repo), "--record", str(record_path), "--json"],
+                                        cwd=project, capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(result.stderr, "")
+                report = json.loads(result.stdout)
+                self.assertEqual(report["assessment_status"], "ERROR")
+                self.assertEqual(report["verdict"], "BLOCK")
+                self.assertEqual(report["execution"], "UNKNOWN")
+                self.assertEqual(report["freshness"], "UNKNOWN")
+                self.assertEqual(report["error"]["code"], "CANNOT_ASSESS")
+                self.assertTrue(report["error"]["message"])
+
     def test_cli_roundtrip_stale_record_and_new_record(self):
         project = Path(__file__).resolve().parents[1]
 

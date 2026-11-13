@@ -5,6 +5,7 @@ This script is a developer check, not a customer usage report.
 """
 
 import os
+import json
 from pathlib import Path
 import subprocess
 import sys
@@ -40,6 +41,36 @@ def main():
                     if state not in result.stdout:
                         raise RuntimeError(f"Installed demo did not report {state}")
             print(f"PASS installed phoenix-gate {' '.join(args)} from unrelated directory")
+        repo = Path(temp) / "repo"
+        repo.mkdir()
+        for args in [("init", "-q"), ("config", "user.name", "Installed CLI Test"),
+                     ("config", "user.email", "test@example.invalid"),
+                     ("config", "commit.gpgSign", "false"),
+                     ("config", "core.hooksPath", str(Path(temp) / "no-hooks"))]:
+            subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
+        sample = repo / "sample.txt"
+        sample.write_text("initial\n", encoding="utf-8")
+        for args in [("add", "."), ("commit", "-qm", "sample")]:
+            subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
+        record = Path(temp) / "run.json"
+        run = subprocess.run([str(executable), "record", "--repo", str(repo), "--output", str(record),
+                              "--", sys.executable, "-B", "-c", "print('installed sample command')"],
+                             cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+        if run.returncode:
+            raise RuntimeError(f"Installed record failed: {run.stdout}\n{run.stderr}")
+        for changed, expected_code, expected_freshness in [(False, 0, "MATCH"), (True, 2, "CHANGED")]:
+            if changed:
+                sample.write_text("normal edit\n", encoding="utf-8")
+            check = subprocess.run([str(executable), "inspect", "--repo", str(repo),
+                                    "--record", str(record), "--json"],
+                                   cwd=temp, env=env, capture_output=True, text=True, timeout=30)
+            report = json.loads(check.stdout)
+            if (check.returncode != expected_code or check.stderr or report.get("report_schema_version") != 1
+                    or report.get("assessment_status") != "ASSESSED"
+                    or report.get("freshness") != expected_freshness
+                    or report.get("verdict") != ("BLOCK" if changed else "PASS")):
+                raise RuntimeError(f"Installed JSON inspection failed: {check.stdout}\n{check.stderr}")
+            print(f"PASS installed record/inspect JSON: {report['verdict']} / {expected_freshness}")
     print(f"Installed package: {installed}")
     print("Only disposable sample tests ran. External user workflows remain unverified.")
 
