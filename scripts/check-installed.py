@@ -71,8 +71,41 @@ def main():
                     or report.get("verdict") != ("BLOCK" if changed else "PASS")):
                 raise RuntimeError(f"Installed JSON inspection failed: {check.stdout}\n{check.stderr}")
             print(f"PASS installed record/inspect JSON: {report['verdict']} / {expected_freshness}")
+            example = subprocess.run([sys.executable, "-I", str(source / "examples" / "resume_task.py"),
+                                      "--repo", str(repo), "--record", str(record)],
+                                     cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+            plan = json.loads(example.stdout)
+            expected_action = "NEEDS_FRESH_EVIDENCE" if changed else "READY_FOR_NEXT_STEP"
+            if example.returncode != expected_code or example.stderr or plan.get("action") != expected_action:
+                raise RuntimeError(f"Resume example failed: {example.stdout}\n{example.stderr}")
+            print(f"PASS installed resume example: {expected_action}")
+        for args in [("add", "."), ("commit", "-qm", "normal edit")]:
+            subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
+        failure_record = Path(temp) / "failed.json"
+        failed = subprocess.run([str(executable), "record", "--repo", str(repo), "--output", str(failure_record),
+                                 "--", sys.executable, "-B", "-c", "raise SystemExit(1)"],
+                                cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+        if failed.returncode != 2:
+            raise RuntimeError("Sample failed command was not blocked")
+        review_record = Path(temp) / "review.json"
+        review = subprocess.run([str(executable), "record", "--repo", str(repo), "--output", str(review_record),
+                                 "--", sys.executable, "-B", "-c",
+                                 "from pathlib import Path; Path('sample.txt').write_text('changed during sample command')"],
+                                cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+        if review.returncode != 1:
+            raise RuntimeError("Unstable sample command did not request review")
+        for record_path, expected_action, expected_code in [(failure_record, "REVIEW_RECORDED_FAILURE", 2),
+                                                            (review_record, "HUMAN_REVIEW", 1),
+                                                            (Path(temp) / "missing.json", "INSPECTION_ERROR", 2)]:
+            example = subprocess.run([sys.executable, "-I", str(source / "examples" / "resume_task.py"),
+                                      "--repo", str(repo), "--record", str(record_path)],
+                                     cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+            plan = json.loads(example.stdout)
+            if example.returncode != expected_code or example.stderr or plan.get("action") != expected_action:
+                raise RuntimeError(f"Resume failure case failed: {example.stdout}\n{example.stderr}")
+            print(f"PASS installed resume example: {expected_action}")
     print(f"Installed package: {installed}")
-    print("Only disposable sample tests ran. External user workflows remain unverified.")
+    print("Only disposable sample commands and tests ran. External user workflows remain unverified.")
 
 
 if __name__ == "__main__":

@@ -94,6 +94,11 @@ as an invocation failure. Check the report schema and assessment status as well
 as the exit code. A PASS does not authorize merging or deployment. This interface
 is present on current `main`, not in the older v0.2.2 ZIP.
 
+For a runnable consumer, see [the task-resume example](examples/README.md).
+It reads this interface, checks schema and exit-code consistency, and prints a
+suggested evidence-handling action. It never starts a resumed task or runs a
+command from a record. The installed-package CI checks also exercise this example.
+
 Automated compatibility checks: [GitHub Actions runs](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/actions/workflows/tests.yml).
 The workflow tests Python 3.11 and 3.14 on Windows and Ubuntu runners after code
 changes and pull requests; documentation-only changes are skipped. Windows CMD
