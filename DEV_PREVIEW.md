@@ -1,19 +1,21 @@
 # Installable development preview / 可安装开发预览
 
-Version: `0.2.3.dev0`. This is an experimental developer release. It includes
+Version: `0.2.3.dev1`. This is an experimental developer release. It includes
 the `phoenix-gate` console entry point, `inspect --json`, UTF-8 BOM reading
-compatibility, and a task-resume example. It has not been published to PyPI.
+compatibility, a task-resume policy and the selected-record workflow example.
+It has not been published to PyPI. Start a bounded team trial with
+[TEAM_TRIAL.md](TEAM_TRIAL.md). Older dev0 artifacts remain unchanged.
 
 Release page:
-https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.3-dev0
+https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.3-dev1
 
 ## Which download? / 下载哪个？
 
-- `phoenix_continuity_gate-0.2.3.dev0-py3-none-any.whl`: installable Python
+- `phoenix_continuity_gate-0.2.3.dev1-py3-none-any.whl`: installable Python
   package. It does not bundle Python or Git. No runtime dependencies or source
   build are needed when installing this wheel.
-- `phoenix-continuity-gate-0.2.3.dev0.zip`: source, tests, Windows demo launcher,
-  documentation and `examples/resume_task.py`. Extract the entire folder.
+- `phoenix-continuity-gate-0.2.3.dev1.zip`: source, tests, Windows demo launcher,
+  documentation, experiments and resume examples. Extract the entire folder.
 - `SHA256SUMS.txt`: checksums of these two artifacts, useful for checking
   download consistency. A checksum file does not independently establish trust.
 
@@ -27,7 +29,7 @@ the wheel path below with the file you downloaded:
 
 ```cmd
 python -m venv .venv
-.venv\Scripts\python.exe -m pip install --no-index --no-deps "C:\path\to\phoenix_continuity_gate-0.2.3.dev0-py3-none-any.whl"
+.venv\Scripts\python.exe -m pip install --no-index --no-deps "C:\path\to\phoenix_continuity_gate-0.2.3.dev1-py3-none-any.whl"
 .venv\Scripts\phoenix-gate.exe --version
 .venv\Scripts\phoenix-gate.exe demo-record
 ```
@@ -39,7 +41,7 @@ python -m venv .venv
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install --no-index --no-deps /path/to/phoenix_continuity_gate-0.2.3.dev0-py3-none-any.whl
+.venv/bin/python -m pip install --no-index --no-deps /path/to/phoenix_continuity_gate-0.2.3.dev1-py3-none-any.whl
 .venv/bin/phoenix-gate --version
 .venv/bin/phoenix-gate demo-record
 ```
@@ -77,6 +79,11 @@ prints an evidence-handling suggestion. It does not start an agent or authorize
 merge, deployment or any other external operation. See examples/README.md.
 
 ## Feedback / 反馈
+
+The installed module `python -m phoenix_continuity_gate.managed` can maintain a
+workflow's selected record across explicit refreshes. See
+[examples/MANAGED_WORKFLOW.md](examples/MANAGED_WORKFLOW.md) for command examples,
+state isolation and failure handling. Use the virtual environment's Python.
 
 Report the actual version, operating system, whether installation worked, and a
 redacted error or one concrete workflow observation. Do not share private source,

@@ -1,8 +1,9 @@
 # One workflow, one selected record / 自动维护当前证据的接入示例
 
-This example is available on the current `main` development checkout. The
-published 0.2.3.dev0 release artifacts do **not** contain it. Install the current
-checkout into a Python 3.11+ virtual environment with `python -m pip install .`.
+This example is included in 0.2.3.dev1. The older 0.2.3.dev0 release artifacts do
+**not** contain it. Install the dev1 wheel using [DEV_PREVIEW.md](../DEV_PREVIEW.md),
+or install a current checkout into a Python 3.11+ virtual environment with
+`python -m pip install .`.
 It has no additional runtime dependencies, account or API requirement.
 
 ## Two explicit operations

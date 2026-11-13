@@ -1,5 +1,9 @@
 # Independent trial: does Phoenix add anything to your workflow?
 
+For the installable dev1 selected-record workflow, start with
+[TEAM_TRIAL.md](TEAM_TRIAL.md). The fixed v0.2.2 instructions below remain for
+that older preview; do not expect the new module in its ZIP.
+
 This is an experimental local tool, not a production safety system. Completing
 the demo is not evidence of customer demand. Negative results are useful.
 

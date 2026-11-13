@@ -1,15 +1,17 @@
-# Phoenix Continuity Gate — development preview 0.2.3.dev0
+# Phoenix Continuity Gate — development preview 0.2.3.dev1
 
-The installable development preview adds `phoenix-gate`, JSON inspection and a
-task-resume example. See [DEV_PREVIEW.md](DEV_PREVIEW.md) for wheel installation
+The installable development preview includes `phoenix-gate`, JSON inspection and
+selected-record workflow examples. See [DEV_PREVIEW.md](DEV_PREVIEW.md) for wheel installation
 without a source build. Release artifacts are on the
-[v0.2.3-dev0 release page](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.3-dev0).
+[v0.2.3-dev1 release page](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.3-dev1).
 The website's v0.2.2 download remains a separate, older preview.
 
-New on `main` (not in those release artifacts): a
+New in dev1 (absent from dev0 and older artifacts): a
 [selected-record workflow example](examples/MANAGED_WORKFLOW.md). Explicit
 refreshes select their result, including failures; status checks read it without
 rerunning commands. Interrupted updates stop rather than reuse an old success.
+For a bounded first team trial and a small feedback outline, start with
+[TEAM_TRIAL.md](TEAM_TRIAL.md). This is not a production-ready 1.0 release.
 
 Product website (no account required): [Phoenix](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/).
 The website includes an illustrative demo and a same-site copy of the v0.2.2 ZIP.
@@ -41,7 +43,7 @@ include this reading-compatibility fix; verdict rules are unchanged.
 
 Development update: `main` can now be installed as a local Python package with a
 `phoenix-gate` console command and `--version`. Its development version is
-`0.2.3.dev0`. This is not a PyPI publication or a change to the v0.2.2 download.
+`0.2.3.dev1`. This is not a PyPI publication or a change to the v0.2.2 download.
 
 ## Install the development checkout (optional)
 
