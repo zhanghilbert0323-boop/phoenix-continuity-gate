@@ -1,5 +1,9 @@
 # Example: consult evidence before resuming a task
 
+For a current-checkout example that maintains a selected record across explicit
+refreshes, see [MANAGED_WORKFLOW.md](MANAGED_WORKFLOW.md). It still never retries
+checks automatically or starts the workflow's next operation.
+
 This example uses the installed development package and its `inspect --json`
 interface. It prints a decision; it does not start an agent, rerun a stored test,
 merge, deploy or modify the target project. It is not an integration with a named

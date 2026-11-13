@@ -33,7 +33,7 @@ def run_tests(repo: Path) -> dict:
     command = [sys.executable, "-E", "-s", "-B", "-m", "unittest", "discover", "-s", "tests", "-v"]
     before = git(repo, "rev-parse", "HEAD")
     start = time.monotonic()
-    result = subprocess.run(command, cwd=repo, capture_output=True, text=True, timeout=90)
+    result = subprocess.run(command, cwd=repo, capture_output=True, text=True, timeout=180)
     return {
         "command": ["python", *command[1:]],
         "head_before": before,

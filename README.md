@@ -6,6 +6,11 @@ without a source build. Release artifacts are on the
 [v0.2.3-dev0 release page](https://github.com/zhanghilbert0323-boop/phoenix-continuity-gate/releases/tag/v0.2.3-dev0).
 The website's v0.2.2 download remains a separate, older preview.
 
+New on `main` (not in those release artifacts): a
+[selected-record workflow example](examples/MANAGED_WORKFLOW.md). Explicit
+refreshes select their result, including failures; status checks read it without
+rerunning commands. Interrupted updates stop rather than reuse an old success.
+
 Product website (no account required): [Phoenix](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/).
 The website includes an illustrative demo and a same-site copy of the v0.2.2 ZIP.
 Direct language links: [English](https://zhanghilbert0323-boop.github.io/phoenix-continuity-gate/?lang=en)

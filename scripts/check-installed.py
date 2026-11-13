@@ -79,8 +79,37 @@ def main():
             if example.returncode != expected_code or example.stderr or plan.get("action") != expected_action:
                 raise RuntimeError(f"Resume example failed: {example.stdout}\n{example.stderr}")
             print(f"PASS installed resume example: {expected_action}")
+        # Exercise the selected-record example from the installed package, too.
         for args in [("add", "."), ("commit", "-qm", "normal edit")]:
             subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
+        state = Path(temp) / "workflow-state"
+        counter = Path(temp) / "managed-starts.txt"
+        counted = (f"from pathlib import Path; p=Path({str(counter)!r}); "
+                   "p.write_text(p.read_text()+'x' if p.exists() else 'x')")
+
+        def managed(action, expected, code, command=None):
+            args = [sys.executable, "-I", "-m", "phoenix_continuity_gate.managed", action,
+                    "--repo", str(repo), "--state", str(state)]
+            if command is not None:
+                args.extend(["--", sys.executable, "-B", "-c", command])
+            result = subprocess.run(args, cwd=temp, env=env, capture_output=True, text=True, timeout=90)
+            value = json.loads(result.stdout)
+            if result.returncode != code or result.stderr or value.get("decision", {}).get("action") != expected:
+                raise RuntimeError(f"Installed selected-record example failed: {result.stdout}\n{result.stderr}")
+            print(f"PASS installed selected-record {action}: {expected}")
+
+        managed("refresh", "READY_FOR_NEXT_STEP", 0, counted)
+        managed("status", "READY_FOR_NEXT_STEP", 0)
+        sample.write_text("managed change\n", encoding="utf-8")
+        managed("status", "NEEDS_FRESH_EVIDENCE", 2)
+        for args in [("add", "."), ("commit", "-qm", "managed change")]:
+            subprocess.run(["git", "-C", str(repo), *args], check=True, capture_output=True, timeout=30)
+        managed("refresh", "READY_FOR_NEXT_STEP", 0, counted)
+        managed("status", "READY_FOR_NEXT_STEP", 0)
+        managed("refresh", "REVIEW_RECORDED_FAILURE", 2, counted + "; raise SystemExit(1)")
+        managed("status", "REVIEW_RECORDED_FAILURE", 2)
+        if counter.read_text() != "xxx" or len(list(state.glob("run-*.json"))) != 3:
+            raise RuntimeError("Selected-record status executed a command or replaced historical records")
         failure_record = Path(temp) / "failed.json"
         failed = subprocess.run([str(executable), "record", "--repo", str(repo), "--output", str(failure_record),
                                  "--", sys.executable, "-B", "-c", "raise SystemExit(1)"],
